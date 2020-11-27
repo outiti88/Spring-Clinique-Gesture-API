@@ -1,9 +1,12 @@
 package com.clinique.app.ws.services.implement;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -100,6 +103,29 @@ public class UserServiceImp implements UserService {
 		if(userEntity == null) throw new UsernameNotFoundException(userId);
 		
 		userRepository.delete(userEntity);
+	}
+
+	@Override
+	public List<UserDto> getUsers(int page, int limit) {
+		
+		if (page>0) page -- ;
+		
+		PageRequest pageableRequest = PageRequest.of(page,limit);
+		
+		Page<UserEntity> userPage = userRepository.findAll(pageableRequest);
+		
+		List<UserEntity> users = userPage.getContent();
+		
+		List<UserDto> usersDtos = new ArrayList<>();
+		
+		for (UserEntity user: users) {
+			UserDto userDto = new UserDto();
+			BeanUtils.copyProperties(user, userDto); //Copier vers la reponse
+			
+			usersDtos.add(userDto);
+		}
+		
+		return usersDtos;
 	}
 
 }

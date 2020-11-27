@@ -1,5 +1,8 @@
 package com.clinique.app.ws.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clinique.app.ws.dto.UserDto;
@@ -38,7 +42,22 @@ public class UserController {
 		return new ResponseEntity<>(userResponse,HttpStatus.OK) ; 
 	}
 	
-	
+	@GetMapping
+	public List<UserResponse> getAllUsers(@RequestParam(value="page", defaultValue = "1") int page ,@RequestParam(value="limit",defaultValue = "4") int limit){
+		
+		List<UserResponse> userResponse = new ArrayList<>();
+		
+		List<UserDto> users =  userService.getUsers(page,limit);
+		
+		for (UserDto userDto: users) {
+			UserResponse user = new UserResponse();
+			BeanUtils.copyProperties(userDto, user); //Copier vers la reponse
+			
+			userResponse.add(user);
+		}
+		
+		return userResponse ; 
+	}
 	
 	@PostMapping
 	public ResponseEntity<Object> createUser(@RequestBody UserRequest userRequest) throws Exception {
