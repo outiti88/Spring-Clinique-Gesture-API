@@ -3,6 +3,9 @@ package com.clinique.app.ws.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,7 +42,7 @@ public class UserController {
 		UserResponse userResponse = new UserResponse();
 		BeanUtils.copyProperties(userDto, userResponse); //Copier vers la reponse
 		
-		return new ResponseEntity<>(userResponse,HttpStatus.OK) ; 
+		return new ResponseEntity<>(userResponse,HttpStatus.OK); 
 	}
 	
 	@GetMapping
@@ -55,31 +58,38 @@ public class UserController {
 			
 			userResponse.add(user);
 		}
-		
 		return userResponse ; 
 	}
 	
 	@PostMapping
-	public ResponseEntity<Object> createUser(@RequestBody UserRequest userRequest) throws Exception {
+	public ResponseEntity<Object> createUser(@RequestBody @Valid UserRequest userRequest) throws Exception {
+		
+		System.out.println(userRequest.getAge());
 		
 		if(userRequest.getFirstName().isEmpty() ) throw new UserException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 		
-		UserDto userDto = new UserDto();
-		BeanUtils.copyProperties(userRequest, userDto); //couche presentation 
+		//UserDto userDto = new UserDto();
+		
+		ModelMapper modelMapper = new ModelMapper();
+		UserDto userDto = modelMapper.map(userRequest, UserDto.class);
+		
+		//BeanUtils.copyProperties(userRequest, userDto); //couche presentation 
 		
 		UserDto createUser = userService.createUser(userDto); //Appel au service
 		
-		UserResponse userResponse = new UserResponse();
-		BeanUtils.copyProperties(createUser, userResponse); //Copier vers la reponse
+		//UserResponse userResponse = new UserResponse();
+		UserResponse userResponse = modelMapper.map(createUser, UserResponse.class);
+		//BeanUtils.copyProperties(createUser, userResponse); //Copier vers la reponse
 		
 		return new ResponseEntity<>(userResponse,HttpStatus.CREATED) ; 
-
 	}
+	
+
 	
 	@PutMapping(path = "/{id}")
 	public ResponseEntity<Object> updateUser(@PathVariable String id, @RequestBody UserRequest userRequest) {
 		UserDto userDto = new UserDto();
-		BeanUtils.copyProperties(userRequest, userDto); //couche presentation 
+		BeanUtils.copyProperties(userRequest, userDto); 
 		
 		UserDto updateUser = userService.updateUser(userDto,id); //Appel au service
 		

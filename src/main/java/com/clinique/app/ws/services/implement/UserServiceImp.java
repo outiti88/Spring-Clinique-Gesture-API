@@ -3,6 +3,7 @@ package com.clinique.app.ws.services.implement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import com.clinique.app.ws.dto.AdresseDto;
 import com.clinique.app.ws.dto.UserDto;
 import com.clinique.app.ws.entities.UserEntity;
 import com.clinique.app.ws.repositories.UserRepository;
@@ -37,15 +40,26 @@ public class UserServiceImp implements UserService {
 		
 		if(userCheck!=null) throw new RuntimeException("L'utilisateur existe déjà");
 
-		UserEntity userEntity = new UserEntity() ;
 		
-		BeanUtils.copyProperties(userDto, userEntity);
+		for (int i = 0; i < userDto.getAdresses().size(); i++) {
+			
+			AdresseDto adresseDto = userDto.getAdresses().get(i);
+			adresseDto.setAdresseId(util.generateStringId(30));
+			userDto.getAdresses().set(i, adresseDto);
+			
+		}
+		
+		ModelMapper modelMapper = new ModelMapper();
+		UserEntity userEntity =  modelMapper.map(userDto, UserEntity.class);
+		
+		
+		//BeanUtils.copyProperties(userDto, userEntity);
 		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-		userEntity.setUserID(util.generateUserId(32));
+		userEntity.setUserID(util.generateStringId(32));
+		
 		UserEntity newUserEntity =  userRepository.save(userEntity);
 		
-		UserDto newUserDto = new UserDto();
-		BeanUtils.copyProperties(newUserEntity, newUserDto);
+		UserDto newUserDto = modelMapper.map(newUserEntity, UserDto.class);
 		
 		return newUserDto;
 	}

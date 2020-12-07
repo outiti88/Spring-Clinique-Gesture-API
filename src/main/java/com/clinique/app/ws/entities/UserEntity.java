@@ -1,11 +1,16 @@
 package com.clinique.app.ws.entities;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 
 
 @Entity(name="users")
@@ -40,6 +45,9 @@ public class UserEntity implements Serializable{
 	
 	@Column(nullable=false)
 	private String encryptedPassword;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<AdresseEntity> addresses ;
 	
 	
 	
@@ -105,6 +113,14 @@ public class UserEntity implements Serializable{
 
 	public void setEncryptedPassword(String encryptedPassword) {
 		this.encryptedPassword = encryptedPassword;
+	}
+
+	public List<AdresseEntity> getAddresses() {
+		return addresses;
+	}
+
+	public void setAddresses(List<AdresseEntity> addresses) {
+		this.addresses = addresses;
 	}
 
 

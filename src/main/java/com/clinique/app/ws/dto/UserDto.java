@@ -1,16 +1,13 @@
 package com.clinique.app.ws.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class UserDto implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -878183180419835961L;
-	/**
-	 * 
-	 */
+	
+	
 	private long id;
 	private String userID;
 	private String firstName;
@@ -20,6 +17,10 @@ public class UserDto implements Serializable{
 	private Boolean emailVerificationStatus = false;
 	private String password;
 	private String encryptedPassword;
+	private List<AdresseDto> adresses;
+	
+	
+	
 	public long getId() {
 		return id;
 	}
@@ -73,6 +74,16 @@ public class UserDto implements Serializable{
 	}
 	public void setEncryptedPassword(String encryptedPassword) {
 		this.encryptedPassword = encryptedPassword;
+	}
+	public List<AdresseDto> getAdresses() {
+		return adresses;
+	}
+	public void setAdresses(List<AdresseDto> adresses) {
+		this.adresses = adresses;
+	}
+	
+	public Boolean getEmailVerificationStatus() {
+		return emailVerificationStatus;
 	}
 	
 	
