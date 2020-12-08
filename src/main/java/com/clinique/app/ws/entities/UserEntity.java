@@ -8,49 +8,44 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
-
-@Entity(name="users")
-public class UserEntity implements Serializable{
+@Entity(name = "users")
+public class UserEntity implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2919143842240940287L;
-	
+
 	@Id
 	@GeneratedValue
 	private long id;
-	
-	@Column(nullable=false)
+
+	@Column(nullable = false)
 	private String userID;
-	
-	@Column(nullable=false, length=50)
+
+	@Column(nullable = false, length = 50)
 	private String firstName;
-	
-	@Column(nullable=false, length=50)
+
+	@Column(nullable = false, length = 50)
 	private String lastName;
-	
-	@Column(nullable=false, unique=true ,length=150)
+
+	@Column(nullable = false, unique = true, length = 150)
 	private String email;
-	
-	@Column(nullable=true)
+
+	@Column(nullable = true)
 	private String emailVerificationToken;
-	
-	@Column(nullable=false)
+
+	@Column(nullable = false)
 	private Boolean emailVerificationStatus = false;
-	
-	@Column(nullable=false)
+
+	@Column(nullable = false)
 	private String encryptedPassword;
-	
+
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<AdresseEntity> addresses ;
-	
-	
-	
+	private List<AdresseEntity> adresses;
+
 	public long getId() {
 		return id;
 	}
@@ -115,13 +110,12 @@ public class UserEntity implements Serializable{
 		this.encryptedPassword = encryptedPassword;
 	}
 
-	public List<AdresseEntity> getAddresses() {
-		return addresses;
+	public List<AdresseEntity> getAdresses() {
+		return adresses;
 	}
 
-	public void setAddresses(List<AdresseEntity> addresses) {
-		this.addresses = addresses;
+	public void setAdresses(List<AdresseEntity> adresses) {
+		this.adresses = adresses;
 	}
-
 
 }

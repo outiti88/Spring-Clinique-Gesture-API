@@ -9,8 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.clinique.app.ws.dto.UserDto;
-
 @Entity(name="adresses")
 public class AdresseEntity implements Serializable {
 
@@ -21,7 +19,7 @@ public class AdresseEntity implements Serializable {
 	@GeneratedValue
 	private long id;
 	
-	@Column(length = 30 ,nullable=false)
+	@Column(length = 100 ,nullable=false)
 	private String adresseId ;
 	
 	@Column(length = 10 ,nullable=false)
@@ -41,7 +39,15 @@ public class AdresseEntity implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "users_id")
-	private UserDto user;
+	private UserEntity user;
+
+	public UserEntity getUser() {
+		return user;
+	}
+
+	public void setUser(UserEntity user) {
+		this.user = user;
+	}
 
 	public long getId() {
 		return id;
@@ -99,12 +105,6 @@ public class AdresseEntity implements Serializable {
 		this.type = type;
 	}
 
-	public UserDto getUser() {
-		return user;
-	}
-
-	public void setUser(UserDto user) {
-		this.user = user;
-	}
+	
 
 }

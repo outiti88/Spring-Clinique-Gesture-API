@@ -75,15 +75,16 @@ public class UserDto implements Serializable{
 	public void setEncryptedPassword(String encryptedPassword) {
 		this.encryptedPassword = encryptedPassword;
 	}
+	
+	
+	public Boolean getEmailVerificationStatus() {
+		return emailVerificationStatus;
+	}
 	public List<AdresseDto> getAdresses() {
 		return adresses;
 	}
 	public void setAdresses(List<AdresseDto> adresses) {
 		this.adresses = adresses;
-	}
-	
-	public Boolean getEmailVerificationStatus() {
-		return emailVerificationStatus;
 	}
 	
 	

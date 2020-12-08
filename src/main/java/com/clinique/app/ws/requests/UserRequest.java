@@ -24,8 +24,6 @@ public class UserRequest {
 	@Size(min = 8)
 	private String password;
 	
-	@NotNull
-	private String age;
 	
 	
 	@NotNull
@@ -38,6 +36,13 @@ public class UserRequest {
 	}
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
+	}
+	
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -53,12 +58,7 @@ public class UserRequest {
 		this.password = password;
 	}
 	
-	public  String getAge() {
-		return age;
-	}
-	public void setAge(String age) {
-		this.age = age;
-	}
+
 	
 	public List<AdresseRequest> getAdresses() {
 		return adresses;

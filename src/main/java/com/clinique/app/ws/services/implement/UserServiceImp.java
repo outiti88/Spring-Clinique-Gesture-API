@@ -41,17 +41,16 @@ public class UserServiceImp implements UserService {
 		if(userCheck!=null) throw new RuntimeException("L'utilisateur existe déjà");
 
 		
+		
 		for (int i = 0; i < userDto.getAdresses().size(); i++) {
-			
 			AdresseDto adresseDto = userDto.getAdresses().get(i);
 			adresseDto.setAdresseId(util.generateStringId(30));
 			userDto.getAdresses().set(i, adresseDto);
-			
 		}
-		
 		ModelMapper modelMapper = new ModelMapper();
 		UserEntity userEntity =  modelMapper.map(userDto, UserEntity.class);
 		
+		System.out.println(userDto);
 		
 		//BeanUtils.copyProperties(userDto, userEntity);
 		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
@@ -60,7 +59,7 @@ public class UserServiceImp implements UserService {
 		UserEntity newUserEntity =  userRepository.save(userEntity);
 		
 		UserDto newUserDto = modelMapper.map(newUserEntity, UserDto.class);
-		
+
 		return newUserDto;
 	}
 

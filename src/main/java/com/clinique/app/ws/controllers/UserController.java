@@ -63,9 +63,7 @@ public class UserController {
 	
 	@PostMapping
 	public ResponseEntity<Object> createUser(@RequestBody @Valid UserRequest userRequest) throws Exception {
-		
-		System.out.println(userRequest.getAge());
-		
+				
 		if(userRequest.getFirstName().isEmpty() ) throw new UserException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 		
 		//UserDto userDto = new UserDto();
