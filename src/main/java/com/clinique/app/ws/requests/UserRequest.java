@@ -24,10 +24,11 @@ public class UserRequest {
 	@Size(min = 8)
 	private String password;
 	
-	
-	
 	@NotNull
 	private List<AdresseRequest> adresses ;
+	
+	@NotNull
+	private ContactRequest contact;
 	
 	
 	
@@ -65,6 +66,12 @@ public class UserRequest {
 	}
 	public void setAdresses(List<AdresseRequest> adresses) {
 		this.adresses = adresses;
+	}
+	public ContactRequest getContact() {
+		return contact;
+	}
+	public void setContact(ContactRequest contact) {
+		this.contact = contact;
 	}
 
 	

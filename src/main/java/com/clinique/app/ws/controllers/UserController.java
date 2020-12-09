@@ -6,7 +6,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +38,8 @@ public class UserController {
 		
 		UserDto userDto = userService.getUserByUserId(id);
 		
-		UserResponse userResponse = new UserResponse();
-		BeanUtils.copyProperties(userDto, userResponse); //Copier vers la reponse
+		ModelMapper modelMapper = new ModelMapper();
+		UserResponse userResponse = modelMapper.map(userDto, UserResponse.class); //Copier vers la reponse
 		
 		return new ResponseEntity<>(userResponse,HttpStatus.OK); 
 	}
@@ -51,11 +50,9 @@ public class UserController {
 		List<UserResponse> userResponse = new ArrayList<>();
 		
 		List<UserDto> users =  userService.getUsers(page,limit);
-		
 		for (UserDto userDto: users) {
-			UserResponse user = new UserResponse();
-			BeanUtils.copyProperties(userDto, user); //Copier vers la reponse
-			
+			ModelMapper modelMapper = new ModelMapper();
+			UserResponse user = modelMapper.map(userDto, UserResponse.class);
 			userResponse.add(user);
 		}
 		return userResponse ; 
@@ -75,8 +72,9 @@ public class UserController {
 		
 		UserDto createUser = userService.createUser(userDto); //Appel au service
 		
-		//UserResponse userResponse = new UserResponse();
+		
 		UserResponse userResponse = modelMapper.map(createUser, UserResponse.class);
+		//UserResponse userResponse = new UserResponse();
 		//BeanUtils.copyProperties(createUser, userResponse); //Copier vers la reponse
 		
 		return new ResponseEntity<>(userResponse,HttpStatus.CREATED) ; 
@@ -86,13 +84,12 @@ public class UserController {
 	
 	@PutMapping(path = "/{id}")
 	public ResponseEntity<Object> updateUser(@PathVariable String id, @RequestBody UserRequest userRequest) {
-		UserDto userDto = new UserDto();
-		BeanUtils.copyProperties(userRequest, userDto); 
+		ModelMapper modelMapper = new ModelMapper();
+		UserDto userDto = modelMapper.map(userRequest, UserDto.class);
 		
 		UserDto updateUser = userService.updateUser(userDto,id); //Appel au service
 		
-		UserResponse userResponse = new UserResponse();
-		BeanUtils.copyProperties(updateUser, userResponse); //Copier vers la reponse
+		UserResponse userResponse = modelMapper.map(updateUser, UserResponse.class); //Copier vers la reponse
 		
 		return new ResponseEntity<>(userResponse,HttpStatus.ACCEPTED) ; 
 	}
