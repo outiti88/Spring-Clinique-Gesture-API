@@ -13,9 +13,7 @@ import javax.validation.constraints.NotBlank;
 @Entity(name="contacts")
 public class ContactEntity implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 7374973620355895618L;
 
 	
