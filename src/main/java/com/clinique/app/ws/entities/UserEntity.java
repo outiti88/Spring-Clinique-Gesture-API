@@ -14,9 +14,7 @@ import javax.persistence.OneToOne;
 @Entity(name = "users")
 public class UserEntity implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 2919143842240940287L;
 
 	@Id
@@ -48,7 +46,7 @@ public class UserEntity implements Serializable {
 	private List<AdresseEntity> adresses;
 	
 	@OneToOne(mappedBy="user" , cascade=CascadeType.ALL)
-	private ContactEntity contact;
+	private RoleEntity role;
 
 	public long getId() {
 		return id;
@@ -122,12 +120,14 @@ public class UserEntity implements Serializable {
 		this.adresses = adresses;
 	}
 
-	public ContactEntity getContact() {
-		return contact;
+	public RoleEntity getRole() {
+		return role;
 	}
 
-	public void setContact(ContactEntity contact) {
-		this.contact = contact;
+	public void setRole(RoleEntity role) {
+		this.role = role;
 	}
+
+	
 
 }

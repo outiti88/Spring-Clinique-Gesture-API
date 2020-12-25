@@ -18,7 +18,7 @@ public class UserDto implements Serializable{
 	private String password;
 	private String encryptedPassword;
 	private List<AdresseDto> adresses;
-	private ContactDto contact;
+	private RoleDto role;
 	
 	
 	
@@ -87,12 +87,14 @@ public class UserDto implements Serializable{
 	public void setAdresses(List<AdresseDto> adresses) {
 		this.adresses = adresses;
 	}
-	public ContactDto getContact() {
-		return contact;
+	public RoleDto getRole() {
+		return role;
 	}
-	public void setContact(ContactDto contact) {
-		this.contact = contact;
+	public void setRole(RoleDto role) {
+		this.role = role;
 	}
+	
+	
 	
 	
 

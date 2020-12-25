@@ -9,7 +9,7 @@ public class UserResponse {
 	private String lastName;
 	private String email;
 	private List<AdresseResponse> adresses;
-	private ContactResponse contact;
+	private RoleResponse role;
 	
 	
 	public String getUserID() {
@@ -42,13 +42,14 @@ public class UserResponse {
 	public void setAdresses(List<AdresseResponse> adresses) {
 		this.adresses = adresses;
 	}
-	public ContactResponse getContact() {
-		return contact;
+	public RoleResponse getRole() {
+		return role;
 	}
-	public void setContact(ContactResponse contact) {
-		this.contact = contact;
+	public void setRole(RoleResponse role) {
+		this.role = role;
 	}
-
+	
+	
 	
 	
 }

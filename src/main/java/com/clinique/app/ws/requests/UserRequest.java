@@ -28,7 +28,7 @@ public class UserRequest {
 	private List<AdresseRequest> adresses ;
 	
 	@NotNull
-	private ContactRequest contact;
+	private RoleRequest role;
 	
 	
 	
@@ -67,12 +67,13 @@ public class UserRequest {
 	public void setAdresses(List<AdresseRequest> adresses) {
 		this.adresses = adresses;
 	}
-	public ContactRequest getContact() {
-		return contact;
+	public RoleRequest getRole() {
+		return role;
 	}
-	public void setContact(ContactRequest contact) {
-		this.contact = contact;
+	public void setRole(RoleRequest role) {
+		this.role = role;
 	}
+
 
 	
 }

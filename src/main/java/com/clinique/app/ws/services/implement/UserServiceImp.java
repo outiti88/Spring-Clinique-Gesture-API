@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,8 +40,8 @@ public class UserServiceImp implements UserService {
 		
 		if(userCheck!=null) throw new RuntimeException("L'utilisateur existe déjà");
 
-		userDto.getContact().setContactId(util.generateStringId(30));
-		userDto.getContact().setUser(userDto);
+		userDto.getRole().setContactId(util.generateStringId(30));
+		userDto.getRole().setUser(userDto);
 		
 		for (int i = 0; i < userDto.getAdresses().size(); i++) {
 			AdresseDto adresseDto = userDto.getAdresses().get(i);
@@ -78,9 +79,10 @@ public class UserServiceImp implements UserService {
 		UserEntity userEntity = userRepository.findByEmail(email);
 		if(userEntity == null) throw new UsernameNotFoundException(email);
 		
-		
-		ModelMapper modelMapper = new ModelMapper();
-		UserDto userDto =  modelMapper.map(userEntity, UserDto.class);
+		UserDto userDto = new UserDto();
+		//ModelMapper modelMapper = new ModelMapper();
+		BeanUtils.copyProperties(userDto, userEntity);
+		//UserDto userDto =  modelMapper.map(userEntity, UserDto.class);
 		
 		return userDto;
 	}

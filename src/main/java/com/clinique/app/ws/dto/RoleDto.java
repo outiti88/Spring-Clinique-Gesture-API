@@ -1,11 +1,10 @@
 package com.clinique.app.ws.dto;
 
-public class ContactDto {
+public class RoleDto {
 
 	private long id;
 	private String contactId;
-	private String mobile;
-	private String skype;
+	private String name;
 	private UserDto user;
 	
 	public long getId() {
@@ -20,17 +19,13 @@ public class ContactDto {
 	public void setContactId(String contactId) {
 		this.contactId = contactId;
 	}
-	public String getMobile() {
-		return mobile;
+	
+	
+	public String getName() {
+		return name;
 	}
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-	public String getSkype() {
-		return skype;
-	}
-	public void setSkype(String skype) {
-		this.skype = skype;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public UserDto getUser() {
 		return user;

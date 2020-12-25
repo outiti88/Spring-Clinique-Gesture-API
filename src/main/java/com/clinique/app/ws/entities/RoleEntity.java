@@ -1,7 +1,6 @@
 package com.clinique.app.ws.entities;
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,8 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 
-@Entity(name="contacts")
-public class ContactEntity implements Serializable {
+@Entity(name="roles")
+public class RoleEntity implements Serializable {
 
 	
 	private static final long serialVersionUID = 7374973620355895618L;
@@ -23,12 +22,12 @@ public class ContactEntity implements Serializable {
 	
 	@NotBlank
 	@Column(length=100)
-	private String contactId;
+	private String roleId;
 	
 	@NotBlank
-	private String mobile;
+	private String name;
 	
-	private String skype;
+	
 	
 	@OneToOne
 	@JoinColumn(name="users_id")
@@ -40,29 +39,24 @@ public class ContactEntity implements Serializable {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getContactId() {
-		return contactId;
-	}
-	public void setContactID(String contactId) {
-		this.contactId = contactId;
-	}
-	public String getMobile() {
-		return mobile;
-	}
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-	public String getSkype() {
-		return skype;
-	}
-	public void setSkype(String skype) {
-		this.skype = skype;
-	}
+
 	public UserEntity getUser() {
 		return user;
 	}
 	public void setUser(UserEntity user) {
 		this.user = user;
+	}
+	public String getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 }
