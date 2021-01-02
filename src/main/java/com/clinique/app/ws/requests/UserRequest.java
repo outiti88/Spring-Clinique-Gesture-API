@@ -24,8 +24,7 @@ public class UserRequest {
 	@Size(min = 8)
 	private String password;
 	
-	@NotNull
-	private List<AdresseRequest> adresses ;
+	private List<PatientRequest> patients ;
 	
 	@NotNull
 	private RoleRequest role;
@@ -61,11 +60,12 @@ public class UserRequest {
 	
 
 	
-	public List<AdresseRequest> getAdresses() {
-		return adresses;
+	
+	public List<PatientRequest> getPatients() {
+		return patients;
 	}
-	public void setAdresses(List<AdresseRequest> adresses) {
-		this.adresses = adresses;
+	public void setPatients(List<PatientRequest> patients) {
+		this.patients = patients;
 	}
 	public RoleRequest getRole() {
 		return role;

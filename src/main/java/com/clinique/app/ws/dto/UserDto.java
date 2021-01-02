@@ -1,7 +1,6 @@
 package com.clinique.app.ws.dto;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class UserDto implements Serializable{
 
@@ -17,7 +16,6 @@ public class UserDto implements Serializable{
 	private Boolean emailVerificationStatus = false;
 	private String password;
 	private String encryptedPassword;
-	private List<AdresseDto> adresses;
 	private RoleDto role;
 	
 	
@@ -81,12 +79,8 @@ public class UserDto implements Serializable{
 	public Boolean getEmailVerificationStatus() {
 		return emailVerificationStatus;
 	}
-	public List<AdresseDto> getAdresses() {
-		return adresses;
-	}
-	public void setAdresses(List<AdresseDto> adresses) {
-		this.adresses = adresses;
-	}
+
+	
 	public RoleDto getRole() {
 		return role;
 	}

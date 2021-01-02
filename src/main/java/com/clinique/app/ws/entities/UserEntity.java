@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -41,9 +42,9 @@ public class UserEntity implements Serializable {
 
 	@Column(nullable = false)
 	private String encryptedPassword;
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<AdresseEntity> adresses;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY , cascade = CascadeType.ALL )
+	private List<PatientEntity> patients;
 	
 	@OneToOne(mappedBy="user" , cascade=CascadeType.ALL)
 	private RoleEntity role;
@@ -112,13 +113,7 @@ public class UserEntity implements Serializable {
 		this.encryptedPassword = encryptedPassword;
 	}
 
-	public List<AdresseEntity> getAdresses() {
-		return adresses;
-	}
-
-	public void setAdresses(List<AdresseEntity> adresses) {
-		this.adresses = adresses;
-	}
+	
 
 	public RoleEntity getRole() {
 		return role;
@@ -126,6 +121,14 @@ public class UserEntity implements Serializable {
 
 	public void setRole(RoleEntity role) {
 		this.role = role;
+	}
+
+	public List<PatientEntity> getPatients() {
+		return patients;
+	}
+
+	public void setPatients(List<PatientEntity> patients) {
+		this.patients = patients;
 	}
 
 	

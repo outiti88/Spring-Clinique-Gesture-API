@@ -1,5 +1,6 @@
 package com.clinique.app.ws.controllers;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +28,7 @@ import com.clinique.app.ws.responses.UserResponse;
 import com.clinique.app.ws.responses.errors.ErrorMessages;
 import com.clinique.app.ws.services.UserService;
 
+@CrossOrigin(origins = "http://localhost:4200/")
 @RestController 
 @RequestMapping("/users")
 public class UserController {
@@ -34,71 +37,100 @@ public class UserController {
 	UserService userService ; //injection de dependance
 	
 	@GetMapping(path = "/{id}")
-	public ResponseEntity<Object> getUser(@PathVariable String id) {
+	public ResponseEntity<Object> getUser(Principal principal, @PathVariable String id) {
+		UserDto currentUser = userService.getUserByUserId(principal.getName());
 		
+		if(!currentUser.getRole().getName().equals("admin")) {
+			id = principal.getName();
+		}
+			
 		UserDto userDto = userService.getUserByUserId(id);
-		
 		ModelMapper modelMapper = new ModelMapper();
 		UserResponse userResponse = modelMapper.map(userDto, UserResponse.class); //Copier vers la reponse
-		
 		return new ResponseEntity<>(userResponse,HttpStatus.OK); 
+
 	}
 	
 	@GetMapping
-	public List<UserResponse> getAllUsers(@RequestParam(value="page", defaultValue = "1") int page ,@RequestParam(value="limit",defaultValue = "4") int limit){
+	public ResponseEntity<Object> getAllUsers(Principal principal, @RequestParam(value="page", defaultValue = "1") int page ,@RequestParam(value="limit",defaultValue = "4") int limit){
 		
 		List<UserResponse> userResponse = new ArrayList<>();
-		
-		List<UserDto> users =  userService.getUsers(page,limit);
-		for (UserDto userDto: users) {
-			ModelMapper modelMapper = new ModelMapper();
-			UserResponse user = modelMapper.map(userDto, UserResponse.class);
-			userResponse.add(user);
+
+		UserDto currentUser = userService.getUserByUserId(principal.getName());
+		if(currentUser.getRole().getName().equals("admin")) {
+			List<UserDto> users =  userService.getUsers(page,limit);
+			for (UserDto userDto: users) {
+				ModelMapper modelMapper = new ModelMapper();
+				UserResponse user = modelMapper.map(userDto, UserResponse.class);
+				userResponse.add(user);
+			}
+			return new ResponseEntity<>(userResponse,HttpStatus.OK) ; 
 		}
-		return userResponse ; 
+		
+		
+		return new ResponseEntity<>(userResponse,HttpStatus.UNAUTHORIZED) ; 
 	}
 	
 	@PostMapping
-	public ResponseEntity<Object> createUser(@RequestBody @Valid UserRequest userRequest) throws Exception {
+	public ResponseEntity<Object> createUser(Principal principal,@RequestBody @Valid UserRequest userRequest) throws Exception {
 				
 		if(userRequest.getFirstName().isEmpty() ) throw new UserException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 		
-		//UserDto userDto = new UserDto();
+		UserDto currentUser = userService.getUserByUserId(principal.getName());
 		
-		ModelMapper modelMapper = new ModelMapper();
-		UserDto userDto = modelMapper.map(userRequest, UserDto.class);
-		
-		//BeanUtils.copyProperties(userRequest, userDto); //couche presentation 
-		
-		UserDto createUser = userService.createUser(userDto); //Appel au service
-		
-		
-		UserResponse userResponse = modelMapper.map(createUser, UserResponse.class);
-		//UserResponse userResponse = new UserResponse();
-		//BeanUtils.copyProperties(createUser, userResponse); //Copier vers la reponse
-		
-		return new ResponseEntity<>(userResponse,HttpStatus.CREATED) ; 
+		if(currentUser.getRole().getName().equals("admin")) {
+			ModelMapper modelMapper = new ModelMapper();
+			UserDto userDto = modelMapper.map(userRequest, UserDto.class);
+			
+			UserDto createUser = userService.createUser(userDto); 		
+			UserResponse userResponse = modelMapper.map(createUser, UserResponse.class);
+
+			
+			return new ResponseEntity<>(userResponse,HttpStatus.CREATED) ; 
+		}
+		List<UserResponse> userResponse = new ArrayList<>();
+
+		return new ResponseEntity<>(userResponse,HttpStatus.UNAUTHORIZED) ; 
+
 	}
 	
 
 	
 	@PutMapping(path = "/{id}")
-	public ResponseEntity<Object> updateUser(@PathVariable String id, @RequestBody UserRequest userRequest) {
-		ModelMapper modelMapper = new ModelMapper();
-		UserDto userDto = modelMapper.map(userRequest, UserDto.class);
+	public ResponseEntity<Object> updateUser(Principal principal , @PathVariable String id, @RequestBody UserRequest userRequest) {
 		
-		UserDto updateUser = userService.updateUser(userDto,id); //Appel au service
+		UserDto currentUser = userService.getUserByUserId(principal.getName());
 		
-		UserResponse userResponse = modelMapper.map(updateUser, UserResponse.class); //Copier vers la reponse
+		if(currentUser.getRole().getName().equals("admin")) {
+			ModelMapper modelMapper = new ModelMapper();
+			UserDto userDto = modelMapper.map(userRequest, UserDto.class);
+			
+			UserDto updateUser = userService.updateUser(userDto,id); //Appel au service
+			
+			UserResponse userResponse = modelMapper.map(updateUser, UserResponse.class); //Copier vers la reponse
+			
+			return new ResponseEntity<>(userResponse,HttpStatus.ACCEPTED) ; 
+		}
+		List<UserResponse> userResponse = new ArrayList<>();
+
+		return new ResponseEntity<>(userResponse,HttpStatus.UNAUTHORIZED) ; 
 		
-		return new ResponseEntity<>(userResponse,HttpStatus.ACCEPTED) ; 
 	}
 	
 	@DeleteMapping(path = "/{id}")
-	public ResponseEntity<Object> deleteUser(@PathVariable String id) {
+	public ResponseEntity<Object> deleteUser(Principal principal , @PathVariable String id) {
 		
-		userService.deleteUser(id);
-	
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT) ; 
+		UserDto currentUser = userService.getUserByUserId(principal.getName());
+		if(currentUser.getRole().getName().equals("admin")) {
+			userService.deleteUser(id);
+			
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT) ; 
+		}
+		List<UserResponse> userResponse = new ArrayList<>();
+
+		return new ResponseEntity<>(userResponse,HttpStatus.UNAUTHORIZED) ; 
+		
+		
+		
 	}
 }
