@@ -6,6 +6,7 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.clinique.app.ws.dto.PatientDto;
@@ -64,8 +65,28 @@ public class PatientServiceImp implements PatientService {
 		
 		PatientDto patient = modelMapper.map(newPatient,PatientDto.class);
 
-
 		return patient;
+	}
+
+	@Override
+	public void deletePatient(String userId , String patientId) {
+		
+		UserEntity currentUser = userRepository.findByUserID(userId); //Lire l'user connecté
+
+		
+		PatientEntity patientEntity = currentUser.getRole().getName().equals("medecin") ?
+				patientRepository.findPatientByMedecin(patientId, currentUser.getId()) :
+				patientRepository.findByPatientId(patientId);
+				
+		if(patientEntity == null) throw new UsernameNotFoundException(patientId);
+		
+		patientRepository.delete(patientEntity);
+	}
+
+	@Override
+	public PatientDto updatePatient(String patientId, PatientDto patientDto) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

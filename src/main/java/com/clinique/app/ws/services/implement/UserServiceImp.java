@@ -98,6 +98,10 @@ public class UserServiceImp implements UserService {
 		
 		userEntity.setLastName(userDto.getLastName());
 		userEntity.setFirstName(userDto.getFirstName());
+		userEntity.setEmail(userDto.getEmail());
+	
+		userEntity.getRole().setName(userDto.getRole().getName());
+
 		
 		UserEntity userUpdated = userRepository.save(userEntity);
 		
@@ -132,7 +136,6 @@ public class UserServiceImp implements UserService {
 		for (UserEntity user: users) {
 			ModelMapper modelMapper = new ModelMapper();
 			UserDto userDto =  modelMapper.map(user, UserDto.class);
-			 //Copier vers la reponse
 			
 			usersDtos.add(userDto);
 		}
