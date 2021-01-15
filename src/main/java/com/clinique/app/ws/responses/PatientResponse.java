@@ -1,5 +1,8 @@
 package com.clinique.app.ws.responses;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class PatientResponse {
 
 	private String patientId;
@@ -8,13 +11,14 @@ public class PatientResponse {
 	private String telephone;
 	private String adresse;
 	private String cin;
-	private UserResponse user;
+	private Set<UserResponse> users = new HashSet<>();
 	
-	public UserResponse getUser() {
-		return user;
+
+	public Set<UserResponse> getUsers() {
+		return users;
 	}
-	public void setUser(UserResponse user) {
-		this.user = user;
+	public void setUsers(Set<UserResponse> users) {
+		this.users = users;
 	}
 	public String getPatientId() {
 		return patientId;

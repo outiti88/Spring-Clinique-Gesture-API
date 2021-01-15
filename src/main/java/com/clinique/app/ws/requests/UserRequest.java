@@ -1,6 +1,7 @@
 package com.clinique.app.ws.requests;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -23,8 +24,6 @@ public class UserRequest {
 	@NotNull
 	@Size(min = 8)
 	private String password;
-	
-	private List<PatientRequest> patients ;
 	
 	@NotNull
 	private RoleRequest role;
@@ -56,16 +55,6 @@ public class UserRequest {
 	}
 	public void setPassword(String password) {
 		this.password = password;
-	}
-	
-
-	
-	
-	public List<PatientRequest> getPatients() {
-		return patients;
-	}
-	public void setPatients(List<PatientRequest> patients) {
-		this.patients = patients;
 	}
 	public RoleRequest getRole() {
 		return role;

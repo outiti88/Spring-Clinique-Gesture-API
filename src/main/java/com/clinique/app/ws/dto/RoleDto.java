@@ -3,9 +3,8 @@ package com.clinique.app.ws.dto;
 public class RoleDto {
 
 	private long id;
-	private String contactId;
+	private String roleId;
 	private String name;
-	private UserDto user;
 	
 	public long getId() {
 		return id;
@@ -13,11 +12,11 @@ public class RoleDto {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getContactId() {
-		return contactId;
+	public String getRoleId() {
+		return roleId;
 	}
-	public void setContactId(String contactId) {
-		this.contactId = contactId;
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
 	}
 	
 	
@@ -26,12 +25,6 @@ public class RoleDto {
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	public UserDto getUser() {
-		return user;
-	}
-	public void setUser(UserDto user) {
-		this.user = user;
 	}
 
 }

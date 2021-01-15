@@ -1,5 +1,9 @@
 package com.clinique.app.ws.dto;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import com.clinique.app.ws.responses.UserResponse;
 
 public class PatientDto {
 
@@ -10,7 +14,15 @@ public class PatientDto {
 	private String telephone;
 	private String adresse;
 	private String cin;
-	private UserDto user;
+	private Set<UserDto> users = new HashSet<>();
+
+	public Set<UserDto> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<UserDto> users) {
+		this.users = users;
+	}
 
 	public long getId() {
 		return id;
@@ -20,13 +32,6 @@ public class PatientDto {
 		this.id = id;
 	}
 
-	public UserDto getUser() {
-		return user;
-	}
-
-	public void setUser(UserDto user) {
-		this.user = user;
-	}
 
 	public String getPatientId() {
 		return patientId;

@@ -1,5 +1,8 @@
 package com.clinique.app.ws.requests;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -10,10 +13,7 @@ public class PatientRequest {
 	private String telephone;
 	private String adresse;
 	private String cin;
-	
-	@Size(min = 29)
-	@NotNull
-	private String medecin_id;
+	private Set<String> usersIds = new HashSet<>();
 	
 	public String getNom() {
 		return nom;
@@ -45,13 +45,11 @@ public class PatientRequest {
 	public void setCin(String cin) {
 		this.cin = cin;
 	}
-	public String getMedecin_id() {
-		return medecin_id;
+	public Set<String> getUsersIds() {
+		return usersIds;
 	}
-	public void setMedecin_id(String medecin_id) {
-		this.medecin_id = medecin_id;
+	public void setUsersIds(Set<String> usersIds) {
+		this.usersIds = usersIds;
 	}
-	
-
 
 }

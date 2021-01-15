@@ -6,7 +6,9 @@ import com.clinique.app.ws.dto.PatientDto;
 
 public interface PatientService {
 	
-	public PatientDto createPatient(PatientDto patientDto, String medecin_id);
+	public PatientDto addPatient(PatientDto patientDto);
+	public PatientDto updatePatient(PatientDto patientDto, String patientId);
+	public void deletePatient(String patientId);
 
 	List<PatientDto> getAllPatients(String email);
 

@@ -1,7 +1,7 @@
 package com.clinique.app.ws.entities;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,8 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 @Entity(name = "users")
 public class UserEntity implements Serializable {
@@ -43,11 +45,34 @@ public class UserEntity implements Serializable {
 	@Column(nullable = false)
 	private String encryptedPassword;
 	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY , cascade = CascadeType.ALL )
-	private List<PatientEntity> patients;
+	@ManyToMany(mappedBy = "users", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
+	private Set<PatientEntity> patients;
 	
-	@OneToOne(mappedBy="user" , cascade=CascadeType.ALL)
+	@ManyToOne
+	@JoinColumn(name = "roleId")
 	private RoleEntity role;
+	
+	@OneToMany(mappedBy = "medecin", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private Set<RdvEntity> rdvs;
+	
+	@OneToMany(mappedBy = "medecin", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private Set<SoinEntity> soins;
+	
+	public Set<SoinEntity> getSoins() {
+		return soins;
+	}
+
+	public void setSoins(Set<SoinEntity> soins) {
+		this.soins = soins;
+	}
+
+	public Set<RdvEntity> getRdvs() {
+		return rdvs;
+	}
+
+	public void setRdvs(Set<RdvEntity> rdvs) {
+		this.rdvs = rdvs;
+	}
 
 	public long getId() {
 		return id;
@@ -123,13 +148,14 @@ public class UserEntity implements Serializable {
 		this.role = role;
 	}
 
-	public List<PatientEntity> getPatients() {
+	public Set<PatientEntity> getPatients() {
 		return patients;
 	}
-
-	public void setPatients(List<PatientEntity> patients) {
+	
+	public void setPatients(Set<PatientEntity> patients) {
 		this.patients = patients;
 	}
+
 
 	
 

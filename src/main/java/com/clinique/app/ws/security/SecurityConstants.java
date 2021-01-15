@@ -7,7 +7,4 @@ public class SecurityConstants {
 	public static final String HEADER_STRING = "Authorization" ;
 	public static final String SIGN_UP_URL = "/users" ;
 	public static final String TOKEN_SECRET = "FZDF6845?f21ds@:515s@cqxcDSDS5121sd45_dsnkncdD4" ;
-
-
-
 }

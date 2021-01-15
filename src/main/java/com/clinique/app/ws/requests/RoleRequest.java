@@ -12,6 +12,4 @@ public class RoleRequest {
 		this.name = name;
 	}
 	
-	
-
 }

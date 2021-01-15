@@ -47,17 +47,17 @@ public class UserController {
 		UserDto userDto = userService.getUserByUserId(id);
 		ModelMapper modelMapper = new ModelMapper();
 		UserResponse userResponse = modelMapper.map(userDto, UserResponse.class); //Copier vers la reponse
-		return new ResponseEntity<>(userResponse,HttpStatus.OK); 
+		return new ResponseEntity<>(userResponse,HttpStatus.OK);
 
 	}
 	
 	@GetMapping
-	public ResponseEntity<Object> getAllUsers(Principal principal, @RequestParam(value="page", defaultValue = "1") int page ,@RequestParam(value="limit",defaultValue = "4") int limit){
+	public ResponseEntity<Object> getAllUsers(@RequestParam(value="page", defaultValue = "1") int page ,@RequestParam(value="limit",defaultValue = "4") int limit){
 		
 		List<UserResponse> userResponse = new ArrayList<>();
 
-		UserDto currentUser = userService.getUserByUserId(principal.getName());
-		if(currentUser.getRole().getName().equals("admin")) {
+		//UserDto currentUser = userService.getUserByUserId(principal.getName());
+		//if(currentUser.getRole().getName().equals("admin")) {
 			List<UserDto> users =  userService.getUsers(page,limit);
 			for (UserDto userDto: users) {
 				ModelMapper modelMapper = new ModelMapper();
@@ -65,20 +65,20 @@ public class UserController {
 				userResponse.add(user);
 			}
 			return new ResponseEntity<>(userResponse,HttpStatus.OK) ; 
-		}
+		//}
 		
 		
-		return new ResponseEntity<>(userResponse,HttpStatus.UNAUTHORIZED) ; 
+		//return new ResponseEntity<>(userResponse,HttpStatus.UNAUTHORIZED) ; 
 	}
 	
 	@PostMapping
-	public ResponseEntity<Object> createUser(Principal principal,@RequestBody @Valid UserRequest userRequest) throws Exception {
+	public ResponseEntity<Object> createUser(@RequestBody @Valid UserRequest userRequest) throws Exception {
 				
 		if(userRequest.getFirstName().isEmpty() ) throw new UserException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 		
-		UserDto currentUser = userService.getUserByUserId(principal.getName());
+		//UserDto currentUser = userService.getUserByUserId(principal.getName());
 		
-		if(currentUser.getRole().getName().equals("admin")) {
+		//if(currentUser.getRole().getName().equals("admin")) {
 			ModelMapper modelMapper = new ModelMapper();
 			UserDto userDto = modelMapper.map(userRequest, UserDto.class);
 			
@@ -87,10 +87,9 @@ public class UserController {
 
 			
 			return new ResponseEntity<>(userResponse,HttpStatus.CREATED) ; 
-		}
-		List<UserResponse> userResponse = new ArrayList<>();
-
-		return new ResponseEntity<>(userResponse,HttpStatus.UNAUTHORIZED) ; 
+		//}
+		
+		//return new ResponseEntity<>(HttpStatus.UNAUTHORIZED) ; 
 
 	}
 	
@@ -124,11 +123,9 @@ public class UserController {
 		if(currentUser.getRole().getName().equals("admin")) {
 			userService.deleteUser(id);
 			
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT) ; 
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		List<UserResponse> userResponse = new ArrayList<>();
-
-		return new ResponseEntity<>(userResponse,HttpStatus.UNAUTHORIZED) ; 
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		
 		
 		

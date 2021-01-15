@@ -1,12 +1,14 @@
 package com.clinique.app.ws.entities;
 
 import java.io.Serializable;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 
 @Entity(name="roles")
@@ -29,9 +31,8 @@ public class RoleEntity implements Serializable {
 	
 	
 	
-	@OneToOne
-	@JoinColumn(name="users_id")
-	private UserEntity user;
+	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+	private List<UserEntity> users;
 	
 	public long getId() {
 		return id;
@@ -40,11 +41,11 @@ public class RoleEntity implements Serializable {
 		this.id = id;
 	}
 
-	public UserEntity getUser() {
-		return user;
+	public List<UserEntity> getUsers() {
+		return users;
 	}
-	public void setUser(UserEntity user) {
-		this.user = user;
+	public void setUsers(List<UserEntity> users) {
+		this.users = users;
 	}
 	public String getRoleId() {
 		return roleId;

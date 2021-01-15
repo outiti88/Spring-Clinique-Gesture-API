@@ -1,13 +1,19 @@
 package com.clinique.app.ws.entities;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 @Entity(name="patients")
 public class PatientEntity implements Serializable {
@@ -22,7 +28,7 @@ public class PatientEntity implements Serializable {
 	private long id;
 	
 	@Column(length = 100 ,nullable=false)
-	private String patientId ;
+	private String patientId;
 	
 	@Column(length = 10 ,nullable=false)
 	private String nom;
@@ -39,11 +45,46 @@ public class PatientEntity implements Serializable {
 	@Column(length = 10 ,nullable=false)
 	private String cin;
 	
-	@ManyToOne
-	@JoinColumn(name = "users_id")
-	private UserEntity user;
+	@ManyToMany(fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinTable(name = "patients_users", joinColumns = {@JoinColumn(name="patients_id")}, inverseJoinColumns = {@JoinColumn(name="users_id")})
+	private Set<UserEntity> users;
+	
+	@OneToMany(mappedBy = "patient", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private Set<RdvEntity> rdv;
 
 	
+	public Set<RdvEntity> getRdv() {
+		return rdv;
+	}
+
+	public void setRdv(Set<RdvEntity> rdv) {
+		this.rdv = rdv;
+	}
+
+	public Set<UserEntity> getUsers() {
+		return users;
+	}
+	
+	public void addUser(UserEntity user) {
+		this.users.add(user);
+		user.getPatients().add(this);
+	}
+	
+	public void removeUser(UserEntity user) {
+		this.getUsers().remove(user);
+		user.getPatients().remove(this);
+	}
+	
+	public void removeUsers() {
+		for (UserEntity user : new HashSet<>(users)) {
+            removeUser(user);
+        }
+	}
+
+	public void setUsers(Set<UserEntity> users) {
+		this.users = users;
+	}
+
 	public String getPatientId() {
 		return patientId;
 	}
@@ -92,13 +133,6 @@ public class PatientEntity implements Serializable {
 		this.cin = cin;
 	}
 	
-	public UserEntity getUser() {
-		return user;
-	}
-
-	public void setUser(UserEntity user) {
-		this.user = user;
-	}
 
 	public long getId() {
 		return id;

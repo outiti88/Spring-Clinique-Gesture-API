@@ -17,9 +17,7 @@ public class UserDto implements Serializable{
 	private String password;
 	private String encryptedPassword;
 	private RoleDto role;
-	
-	
-	
+
 	public long getId() {
 		return id;
 	}

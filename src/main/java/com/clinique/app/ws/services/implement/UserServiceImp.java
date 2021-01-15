@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,9 +14,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.clinique.app.ws.dto.RoleDto;
 import com.clinique.app.ws.dto.UserDto;
+import com.clinique.app.ws.entities.RoleEntity;
 import com.clinique.app.ws.entities.UserEntity;
+import com.clinique.app.ws.exception.UserException;
+import com.clinique.app.ws.repositories.RoleRepository;
 import com.clinique.app.ws.repositories.UserRepository;
+import com.clinique.app.ws.responses.errors.ErrorMessages;
 import com.clinique.app.ws.services.UserService;
 import com.clinique.app.ws.shared.Utils;
 
@@ -30,6 +36,9 @@ public class UserServiceImp implements UserService {
 	
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Autowired
+	RoleRepository roleRepository;
 
 	@Override
 	public UserDto createUser(UserDto userDto) {
@@ -37,9 +46,16 @@ public class UserServiceImp implements UserService {
 		UserEntity userCheck = userRepository.findByEmail(userDto.getEmail());
 		
 		if(userCheck!=null) throw new RuntimeException("L'utilisateur existe déjà");
+		
+		RoleEntity roleEntity = roleRepository.findByName(userDto.getRole().getName());
+		
+		if(roleEntity == null) throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		
+		RoleDto roleDto = new RoleDto();
+		
+		BeanUtils.copyProperties(roleEntity, roleDto);
 
-		userDto.getRole().setContactId(util.generateStringId(30));
-		userDto.getRole().setUser(userDto);
+		userDto.setRole(roleDto);
 		
 		
 		ModelMapper modelMapper = new ModelMapper();
@@ -98,6 +114,10 @@ public class UserServiceImp implements UserService {
 		
 		userEntity.setLastName(userDto.getLastName());
 		userEntity.setFirstName(userDto.getFirstName());
+		userEntity.setEmail(userDto.getEmail());
+		RoleEntity role = roleRepository.findByName(userDto.getRole().getName());
+		if(role == null) throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		userEntity.setRole(role);
 		
 		UserEntity userUpdated = userRepository.save(userEntity);
 		
