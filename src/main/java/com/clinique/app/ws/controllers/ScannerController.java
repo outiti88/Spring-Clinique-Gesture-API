@@ -45,7 +45,7 @@ public class ScannerController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Object> getScanners(){
+	public ResponseEntity<List<ScannerResponse>> getScanners(){
 		List<ScannerResponse> scannerResponses = new ArrayList<ScannerResponse>();
 		List<ScannerDto> scannerDtos = scannerService.getScanners();
 		scannerDtos.stream().forEach(scannerDto -> {
@@ -53,7 +53,7 @@ public class ScannerController {
 			BeanUtils.copyProperties(scannerDto, scannerResponse);
 			scannerResponses.add(scannerResponse);
 		});
-		return new ResponseEntity<>(scannerResponses,HttpStatus.OK);
+		return new ResponseEntity<List<ScannerResponse>>(scannerResponses,HttpStatus.OK);
 	}
 	
 	@PutMapping(path = "/{scannerId}")

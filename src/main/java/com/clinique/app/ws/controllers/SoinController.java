@@ -62,7 +62,7 @@ public class SoinController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Object> getSoins(){
+	public ResponseEntity<List<SoinResponse>> getSoins(){
 		List<SoinResponse> soinsResponses = new ArrayList<SoinResponse>();
 		List<SoinDto> soinsDtos = soinService.getSoins();
 		ModelMapper modelMapper = new ModelMapper();
@@ -71,7 +71,7 @@ public class SoinController {
 			soinResponse = modelMapper.map(soinDto, SoinResponse.class);
 			soinsResponses.add(soinResponse);
 		});
-		return new ResponseEntity<>(soinsResponses,HttpStatus.OK);
+		return new ResponseEntity<List<SoinResponse>>(soinsResponses,HttpStatus.OK);
 	}
 	
 	@DeleteMapping(path = "/{soinId}")

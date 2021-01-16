@@ -52,7 +52,7 @@ public class RdvController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Object> getRdvs() throws Exception {
+	public ResponseEntity<List<RdvResponse>> getRdvs() throws Exception {
 		List<RdvResponse> rdvResponses = new ArrayList<>();
 		List<RdvDto> rdvDtos = rdvService.getRdvs();
 		for(RdvDto rdvDto: rdvDtos) {
@@ -60,7 +60,7 @@ public class RdvController {
 			RdvResponse rdvResponse = modelMapper.map(rdvDto, RdvResponse.class);
 			rdvResponses.add(rdvResponse);
 		}
-		return new ResponseEntity<>(rdvResponses,HttpStatus.OK);
+		return new ResponseEntity<List<RdvResponse>>(rdvResponses,HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
