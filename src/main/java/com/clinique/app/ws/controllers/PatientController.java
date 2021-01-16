@@ -74,10 +74,10 @@ public class PatientController {
 			if( patientRepository.findByCin(patientRequest.getCin()) != null ) throw new UserException(ErrorMessages.REQUIRED_ALREADY_EXISTS.getErrorMessage());
 			ModelMapper modelMapper = new ModelMapper();
 			PatientDto patientDto = modelMapper.map(patientRequest, PatientDto.class);
-			patientRequest.getUsersIds().forEach(userId -> {
+			patientDto.getUsers().clear();
+			patientRequest.getUsersIds().stream().forEach(userId -> {
 				UserDto userDto = new UserDto();
 				userDto.setUserID(userId);
-				patientDto.getUsers().clear();
 				patientDto.getUsers().add(userDto);
 			});
 			
@@ -96,10 +96,10 @@ public class PatientController {
 		//if(currentUser.getRole().getName().equals("gp") || currentUser.getRole().getName().equals("medecin")) {
 			ModelMapper modelMapper = new ModelMapper();
 			PatientDto patientDto = modelMapper.map(patientRequest, PatientDto.class);
-			patientRequest.getUsersIds().forEach(userId -> {
+			patientDto.getUsers().clear();
+			patientRequest.getUsersIds().stream().forEach(userId -> {
 				UserDto userDto = new UserDto();
 				userDto.setUserID(userId);
-				patientDto.getUsers().clear();
 				patientDto.getUsers().add(userDto);
 			});
 			PatientDto responseDto = patientService.updatePatient(patientDto, patientId);//Appel au service
