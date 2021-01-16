@@ -76,7 +76,7 @@ public class RdvServiceImpl implements RdvService {
 			e.printStackTrace();
 		}
 		rdvEntity.setMotif(rdvDto.getMotif());
-		rdvEntity.setRdvId(rdvDto.getRdvId());
+		rdvEntity.setRdvId(rdvDto.getRdvId());	
 		rdvEntity.setState(State.valueOf(rdvDto.getState()));
 		return rdvEntity;
 	}
@@ -105,7 +105,16 @@ public class RdvServiceImpl implements RdvService {
 	public RdvDto updateRdv(RdvDto rdvDto, String rdvId) {
 		RdvEntity rdvEntity = rdvRepository.findByRdvId(rdvId);
 		if (rdvEntity == null)  throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		rdvDto.setRdvId(rdvId);
+		long id = rdvEntity.getId();
+		UserEntity medecinEntity = userRepository.findByUserID(rdvDto.getMedecin().getUserID());
+		if(medecinEntity == null) throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		PatientEntity patientEntity = patientRepository.findByPatientId(rdvDto.getPatient().getPatientId());
+		if(patientEntity == null) throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
 		rdvEntity = mapDtoToEntity(rdvDto);
+		rdvEntity.setId(id);
+		rdvEntity.setMedecin(medecinEntity);
+		rdvEntity.setPatient(patientEntity);
 		rdvRepository.save(rdvEntity);
 		rdvDto = mapEntityToDto(rdvEntity);
 		return rdvDto;
