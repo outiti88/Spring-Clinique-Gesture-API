@@ -9,11 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
 @Entity
 public class SoinEntity implements Serializable{
 
@@ -33,10 +28,52 @@ public class SoinEntity implements Serializable{
 	private String typeSoin;
 	
 	@Column(nullable = false, length = 50)
-	private String prix;
+	private float prix;
 	
 	@ManyToOne
 	@JoinColumn(name = "userID")
 	private UserEntity medecin;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getSoinId() {
+		return soinId;
+	}
+
+	public void setSoinId(String soinId) {
+		this.soinId = soinId;
+	}
+
+	public String getTypeSoin() {
+		return typeSoin;
+	}
+
+	public void setTypeSoin(String typeSoin) {
+		this.typeSoin = typeSoin;
+	}
+
+	public float getPrix() {
+		return prix;
+	}
+
+	public void setPrix(float prix) {
+		this.prix = prix;
+	}
+
+	public UserEntity getMedecin() {
+		return medecin;
+	}
+
+	public void setMedecin(UserEntity medecin) {
+		this.medecin = medecin;
+	}
+	
+	
 	
 }

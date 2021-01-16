@@ -1,19 +1,38 @@
 package com.clinique.app.ws.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class SoinDto {
 
-	@SuppressWarnings("unused")
 	private String soinId;
-	@SuppressWarnings("unused")
 	private String typeSoin;
-	@SuppressWarnings("unused")
-	private String prix;
-	@SuppressWarnings("unused")
+	private float prix;
 	private UserDto medecin;
+	
+	
+	public String getSoinId() {
+		return soinId;
+	}
+	public void setSoinId(String soinId) {
+		this.soinId = soinId;
+	}
+	public String getTypeSoin() {
+		return typeSoin;
+	}
+	public void setTypeSoin(String typeSoin) {
+		this.typeSoin = typeSoin;
+	}
+	public float getPrix() {
+		return prix;
+	}
+	public void setPrix(float prix) {
+		this.prix = prix;
+	}
+	public UserDto getMedecin() {
+		return medecin;
+	}
+	public void setMedecin(UserDto medecin) {
+		this.medecin = medecin;
+	}
+	
 	
 }

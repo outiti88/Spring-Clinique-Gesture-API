@@ -1,20 +1,40 @@
 package com.clinique.app.ws.responses;
 
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class SoinResponse {
 
 	
-	@SuppressWarnings("unused")
 	private String soinId;
-	@SuppressWarnings("unused")
 	private String typeSoin;
-	@SuppressWarnings("unused")
-	private String prix;
-	@SuppressWarnings("unused")
+	private float prix;
 	private UserResponse medecin;
+	
+	
+	public String getSoinId() {
+		return soinId;
+	}
+	public void setSoinId(String soinId) {
+		this.soinId = soinId;
+	}
+	public String getTypeSoin() {
+		return typeSoin;
+	}
+	public void setTypeSoin(String typeSoin) {
+		this.typeSoin = typeSoin;
+	}
+	public float getPrix() {
+		return prix;
+	}
+	public void setPrix(float prix) {
+		this.prix = prix;
+	}
+	public UserResponse getMedecin() {
+		return medecin;
+	}
+	public void setMedecin(UserResponse medecin) {
+		this.medecin = medecin;
+	}
+	
+	
 	
 }
