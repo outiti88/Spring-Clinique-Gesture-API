@@ -2,11 +2,15 @@ package com.clinique.app.ws.entities;
 
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class ScannerEntity implements Serializable{
@@ -28,6 +32,17 @@ public class ScannerEntity implements Serializable{
 	
 	@Column(nullable = false, length = 50)
 	private float price;
+	
+	@ManyToMany(mappedBy = "scanners", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+	private Set<Dossier> dossiers;
+
+	public Set<Dossier> getDossiers() {
+		return dossiers;
+	}
+
+	public void setDossiers(Set<Dossier> dossiers) {
+		this.dossiers = dossiers;
+	}
 
 	public long getId() {
 		return id;

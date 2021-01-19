@@ -1,12 +1,16 @@
 package com.clinique.app.ws.entities;
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -33,6 +37,17 @@ public class SoinEntity implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "userID")
 	private UserEntity medecin;
+	
+	@ManyToMany(mappedBy = "soins", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+	private Set<Dossier> dossiers;
+
+	public Set<Dossier> getDossiers() {
+		return dossiers;
+	}
+
+	public void setDossiers(Set<Dossier> dossiers) {
+		this.dossiers = dossiers;
+	}
 
 	public long getId() {
 		return id;

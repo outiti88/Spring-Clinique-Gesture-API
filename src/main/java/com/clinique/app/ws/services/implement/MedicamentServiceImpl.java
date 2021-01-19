@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.clinique.app.ws.dto.MedicamentDto;
 import com.clinique.app.ws.entities.Medicament;
 import com.clinique.app.ws.exception.UserException;
+import com.clinique.app.ws.repositories.DossierMedicamentRepository;
+import com.clinique.app.ws.repositories.DossierRepository;
 import com.clinique.app.ws.repositories.MedicamentRepository;
 import com.clinique.app.ws.responses.errors.ErrorMessages;
 import com.clinique.app.ws.services.MedicamentService;
@@ -19,6 +21,12 @@ public class MedicamentServiceImpl implements MedicamentService{
 	
 	@Autowired
 	MedicamentRepository medicamentRepository;
+	
+	@Autowired
+	DossierRepository dossierRepository;
+	
+	@Autowired
+	DossierMedicamentRepository dossierMedicamentRepository;
 	
 	@Autowired
 	Utils util;
@@ -60,6 +68,7 @@ public class MedicamentServiceImpl implements MedicamentService{
 	public void deleteMedicament(String medicamentId) {
 		Medicament medicament = medicamentRepository.findByMedicamentId(medicamentId);
 		if (medicament == null) throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		dossierMedicamentRepository.deleteDossierMedicamentByMedicamentId(medicament.getId());
 		medicamentRepository.delete(medicament);
 	}
 	

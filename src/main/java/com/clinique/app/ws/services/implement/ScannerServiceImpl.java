@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.clinique.app.ws.dto.ScannerDto;
 import com.clinique.app.ws.entities.ScannerEntity;
 import com.clinique.app.ws.exception.UserException;
+import com.clinique.app.ws.repositories.DossierRepository;
 import com.clinique.app.ws.repositories.ScannerRepository;
 import com.clinique.app.ws.responses.errors.ErrorMessages;
 import com.clinique.app.ws.services.ScannerService;
@@ -19,6 +20,9 @@ public class ScannerServiceImpl implements ScannerService{
 	
 	@Autowired
 	ScannerRepository scannerRepository;
+	
+	@Autowired
+	DossierRepository dossierRepository;
 	
 	@Autowired
 	Utils util;
@@ -61,6 +65,10 @@ public class ScannerServiceImpl implements ScannerService{
 	public void deleteScanner(String scannerId) {
 		ScannerEntity scannerEntity = scannerRepository.findByScannerId(scannerId);
 		if(scannerEntity == null) throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		scannerEntity.getDossiers().stream().forEach(dossier -> {
+			dossier.removeScanner(scannerEntity);
+			dossierRepository.save(dossier);
+		});
 		scannerRepository.delete(scannerEntity);
 	}
 	

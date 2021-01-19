@@ -11,6 +11,7 @@ import com.clinique.app.ws.dto.UserDto;
 import com.clinique.app.ws.entities.SoinEntity;
 import com.clinique.app.ws.entities.UserEntity;
 import com.clinique.app.ws.exception.UserException;
+import com.clinique.app.ws.repositories.DossierRepository;
 import com.clinique.app.ws.repositories.SoinRepository;
 import com.clinique.app.ws.repositories.UserRepository;
 import com.clinique.app.ws.responses.errors.ErrorMessages;
@@ -25,6 +26,9 @@ public class SoinServiceImpl implements SoinService {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	DossierRepository dossierRepository;
 	
 	@Autowired
 	Utils util;
@@ -61,6 +65,10 @@ public class SoinServiceImpl implements SoinService {
 	public void deleteSoin(String soinId) {
 		SoinEntity soinEntity = soinRepository.findBySoinId(soinId);
 		if (soinEntity == null)  throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		soinEntity.getDossiers().stream().forEach(dossier -> {
+			dossier.removeSoin(soinEntity);
+			dossierRepository.save(dossier);
+		});
 		soinRepository.delete(soinEntity);
 	}
 

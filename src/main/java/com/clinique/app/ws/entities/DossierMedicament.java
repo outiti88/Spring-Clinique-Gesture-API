@@ -69,6 +69,14 @@ public class DossierMedicament  implements Serializable{
 		this.qty = qty;
 	}
 	
+	public DossierMedicamentId getId() {
+		return id;
+	}
+
+	public void setId(DossierMedicamentId id) {
+		this.id = id;
+	}
+
 	@Override
     public boolean equals(Object o) {
         if (this == o) return true;

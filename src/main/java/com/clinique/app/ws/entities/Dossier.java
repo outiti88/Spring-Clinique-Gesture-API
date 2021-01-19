@@ -1,14 +1,20 @@
 package com.clinique.app.ws.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -30,7 +36,64 @@ public class Dossier implements Serializable {
 	
 	@OneToMany(mappedBy = "dossier", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
 	private List<DossierMedicament> medicaments = new ArrayList<>();
+	
+	@ManyToMany(fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinTable(name = "dossiers_soins", joinColumns = {@JoinColumn(name="dossiers_id")}, inverseJoinColumns = {@JoinColumn(name="soins_id")})
+	private Set<SoinEntity> soins = new HashSet<>();
+	
+	@ManyToMany(fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinTable(name = "dossiers_scanners", joinColumns = {@JoinColumn(name="dossiers_id")}, inverseJoinColumns = {@JoinColumn(name="scanners_id")})
+	private Set<ScannerEntity> scanners = new HashSet<>();
+	
+	
+	public Set<SoinEntity> getSoins() {
+		return soins;
+	}
 
+	public void setSoins(Set<SoinEntity> soins) {
+		this.soins = soins;
+	}
+
+	public Set<ScannerEntity> getScanners() {
+		return scanners;
+	}
+
+	public void setScanners(Set<ScannerEntity> scanners) {
+		this.scanners = scanners;
+	}
+
+	public void addSoin(SoinEntity soin) {
+		this.soins.add(soin);
+		soin.getDossiers().add(this);
+	}
+	
+	public void removeSoin(SoinEntity soin) {
+		this.getSoins().remove(soin);
+		soin.getDossiers().remove(this);
+	}
+	
+	public void removeSoins() {
+		for (SoinEntity soin : new HashSet<>(soins)) {
+            removeSoin(soin);
+        }
+	}
+	
+	public void addScanner(ScannerEntity scanner) {
+		this.scanners.add(scanner);
+		scanner.getDossiers().add(this);
+	}
+	
+	public void removeScanner(ScannerEntity scanner) {
+		this.getScanners().remove(scanner);
+		scanner.getDossiers().remove(this);
+	}
+	
+	public void removeScanners() {
+		for (ScannerEntity scanner : new HashSet<>(scanners)) {
+            removeScanner(scanner);
+        }
+	}
+	
 	public List<DossierMedicament> getMedicaments() {
 		return medicaments;
 	}
