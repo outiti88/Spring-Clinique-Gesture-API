@@ -1,6 +1,7 @@
 package com.clinique.app.ws.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class UserDto implements Serializable{
 
@@ -17,7 +18,14 @@ public class UserDto implements Serializable{
 	private String password;
 	private String encryptedPassword;
 	private RoleDto role;
+	private List<PatientDto> patientDto;
 
+	public List<PatientDto> getPatientDto() {
+		return patientDto;
+	}
+	public void setPatientDto(List<PatientDto> patientDto) {
+		this.patientDto = patientDto;
+	}
 	public long getId() {
 		return id;
 	}

@@ -2,6 +2,7 @@ package com.clinique.app.ws.controllers;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -21,9 +22,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clinique.app.ws.dto.PatientDto;
 import com.clinique.app.ws.dto.UserDto;
+import com.clinique.app.ws.entities.PatientEntity;
+import com.clinique.app.ws.entities.UserEntity;
 import com.clinique.app.ws.exception.UserException;
+import com.clinique.app.ws.repositories.PatientRepository;
+import com.clinique.app.ws.repositories.UserRepository;
 import com.clinique.app.ws.requests.UserRequest;
+import com.clinique.app.ws.responses.PatientResponse;
+import com.clinique.app.ws.responses.RoleResponse;
 import com.clinique.app.ws.responses.UserResponse;
 import com.clinique.app.ws.responses.errors.ErrorMessages;
 import com.clinique.app.ws.services.UserService;
@@ -36,6 +44,7 @@ public class UserController {
 	@Autowired
 	UserService userService ; //injection de dependance
 	
+	
 	@GetMapping(path = "/{id}")
 	public ResponseEntity<Object> getUser(Principal principal, @PathVariable String id) {
 		UserDto currentUser = userService.getUserByUserId(principal.getName());
@@ -45,11 +54,33 @@ public class UserController {
 		}
 			
 		UserDto userDto = userService.getUserByUserId(id);
-		ModelMapper modelMapper = new ModelMapper();
-		UserResponse userResponse = modelMapper.map(userDto, UserResponse.class); //Copier vers la reponse
+		UserResponse userResponse = new UserResponse(); //Copier vers la reponse
+		userResponse.setEmail(userDto.getEmail());
+		userResponse.setFirstName(userDto.getFirstName());
+		userResponse.setLastName(userDto.getLastName());
+		RoleResponse roleResponse = new RoleResponse();
+		roleResponse.setName(userDto.getRole().getName());
+		roleResponse.setRoleId(userDto.getRole().getRoleId());
+		userResponse.setRole(roleResponse);
+		userResponse.setUserID(userDto.getUserID());
+		List<PatientResponse> patientsResponses = new ArrayList<>();
+		Iterator<PatientDto> iterator = userDto.getPatientDto().iterator();
+		while (iterator.hasNext()) {
+			PatientDto patientDto = iterator.next();
+			PatientResponse patientResponse = new PatientResponse();
+			patientResponse.setAdresse(patientDto.getAdresse());
+			patientResponse.setCin(patientDto.getCin());
+			patientResponse.setNom(patientDto.getNom());
+			patientResponse.setPatientId(patientDto.getPatientId());
+			patientResponse.setprenom(patientDto.getPrenom());
+			patientResponse.setTelephone(patientDto.getTelephone());
+			patientsResponses.add(patientResponse);
+		}
+		userResponse.setPatientResponse(patientsResponses);
 		return new ResponseEntity<>(userResponse,HttpStatus.OK);
 
 	}
+	
 	
 	@GetMapping
 	public ResponseEntity<Object> getAllUsers(@RequestParam(value="page", defaultValue = "1") int page ,@RequestParam(value="limit",defaultValue = "4") int limit){

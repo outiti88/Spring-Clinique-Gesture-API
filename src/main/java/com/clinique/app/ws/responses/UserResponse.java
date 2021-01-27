@@ -1,5 +1,7 @@
 package com.clinique.app.ws.responses;
 
+import java.util.List;
+
 public class UserResponse {
 
 	private String userID;
@@ -7,8 +9,15 @@ public class UserResponse {
 	private String lastName;
 	private String email;
 	private RoleResponse role;
+	private List<PatientResponse> patientResponse;
 	
-	
+
+	public List<PatientResponse> getPatientResponse() {
+		return patientResponse;
+	}
+	public void setPatientResponse(List<PatientResponse> patientResponse) {
+		this.patientResponse = patientResponse;
+	}
 	public String getUserID() {
 		return userID;
 	}
@@ -33,7 +42,6 @@ public class UserResponse {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
 	
 	public RoleResponse getRole() {
 		return role;

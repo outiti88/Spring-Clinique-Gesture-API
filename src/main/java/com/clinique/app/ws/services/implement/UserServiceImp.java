@@ -1,6 +1,7 @@
 package com.clinique.app.ws.services.implement;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -14,8 +15,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.clinique.app.ws.dto.PatientDto;
 import com.clinique.app.ws.dto.RoleDto;
 import com.clinique.app.ws.dto.UserDto;
+import com.clinique.app.ws.entities.PatientEntity;
 import com.clinique.app.ws.entities.RoleEntity;
 import com.clinique.app.ws.entities.UserEntity;
 import com.clinique.app.ws.exception.UserException;
@@ -102,8 +105,29 @@ public class UserServiceImp implements UserService {
 		if(userEntity == null) throw new UsernameNotFoundException(userId);
 		
 		ModelMapper modelMapper = new ModelMapper();
-		UserDto userDto =  modelMapper.map(userEntity, UserDto.class);
-		
+		UserDto userDto =  new UserDto();
+		userDto.setEmail(userEntity.getEmail());
+		userDto.setUserID(userEntity.getUserID());
+		userDto.setLastName(userEntity.getLastName());
+		userDto.setFirstName(userEntity.getLastName());
+		RoleDto roleDto = new RoleDto();
+		roleDto.setName(userEntity.getRole().getName());
+		roleDto.setRoleId(userEntity.getRole().getRoleId());
+		Iterator<PatientEntity> iterator = userEntity.getPatients().iterator();
+		List<PatientDto> patientDtos = new ArrayList<>();
+		while (iterator.hasNext()) {
+			PatientEntity patientEntity = iterator.next();
+			PatientDto patientDto = new PatientDto();
+			patientDto.setAdresse(patientEntity.getAdresse());
+			patientDto.setCin(patientEntity.getCin());
+			patientDto.setNom(patientEntity.getNom());
+			patientDto.setPatientId(patientEntity.getPatientId());
+			patientDto.setPrenom(patientEntity.getprenom());
+			patientDto.setTelephone(patientEntity.getTelephone());
+			patientDtos.add(patientDto);
+		}
+		userDto.setRole(roleDto);
+		userDto.setPatientDto(patientDtos);
 		return userDto;
 	}
 
