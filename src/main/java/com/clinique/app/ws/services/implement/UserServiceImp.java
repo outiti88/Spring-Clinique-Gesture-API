@@ -76,6 +76,8 @@ public class UserServiceImp implements UserService {
 
 		return newUserDto;
 	}
+	
+	
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -103,8 +105,6 @@ public class UserServiceImp implements UserService {
 	public UserDto getUserByUserId(String userId) {
 		UserEntity userEntity = userRepository.findByUserID(userId);
 		if(userEntity == null) throw new UsernameNotFoundException(userId);
-		
-		ModelMapper modelMapper = new ModelMapper();
 		UserDto userDto =  new UserDto();
 		userDto.setEmail(userEntity.getEmail());
 		userDto.setUserID(userEntity.getUserID());
@@ -182,6 +182,44 @@ public class UserServiceImp implements UserService {
 		}
 		
 		return usersDtos;
+	}
+
+
+
+	@Override
+	public List<UserDto> getUsersByRole(String roleId) {
+		RoleEntity roleEntity = roleRepository.findByRoleId(roleId);
+		List<UserEntity> users = userRepository.findByRole(roleEntity);
+		List<UserDto> userDtos = new ArrayList<>();
+		Iterator<UserEntity> iterator = users.iterator();
+		while (iterator.hasNext()) {
+			UserEntity userEntity = iterator.next();
+			UserDto userDto = new UserDto();
+			userDto.setEmail(userEntity.getEmail());
+			userDto.setUserID(userEntity.getUserID());
+			userDto.setLastName(userEntity.getLastName());
+			userDto.setFirstName(userEntity.getLastName());
+			RoleDto roleDto = new RoleDto();
+			roleDto.setName(userEntity.getRole().getName());
+			roleDto.setRoleId(userEntity.getRole().getRoleId());
+			Iterator<PatientEntity> patientIterator = userEntity.getPatients().iterator();
+			List<PatientDto> patientDtos = new ArrayList<>();
+			while (iterator.hasNext()) {
+				PatientEntity patientEntity = patientIterator.next();
+				PatientDto patientDto = new PatientDto();
+				patientDto.setAdresse(patientEntity.getAdresse());
+				patientDto.setCin(patientEntity.getCin());
+				patientDto.setNom(patientEntity.getNom());
+				patientDto.setPatientId(patientEntity.getPatientId());
+				patientDto.setPrenom(patientEntity.getprenom());
+				patientDto.setTelephone(patientEntity.getTelephone());
+				patientDtos.add(patientDto);
+			}
+			userDto.setRole(roleDto);
+			userDto.setPatientDto(patientDtos);
+			userDtos.add(userDto);
+		}
+		return userDtos;
 	}
 
 }

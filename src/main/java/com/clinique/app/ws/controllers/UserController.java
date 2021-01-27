@@ -23,11 +23,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clinique.app.ws.dto.PatientDto;
+import com.clinique.app.ws.dto.RoleDto;
 import com.clinique.app.ws.dto.UserDto;
 import com.clinique.app.ws.entities.PatientEntity;
+import com.clinique.app.ws.entities.RoleEntity;
 import com.clinique.app.ws.entities.UserEntity;
 import com.clinique.app.ws.exception.UserException;
 import com.clinique.app.ws.repositories.PatientRepository;
+import com.clinique.app.ws.repositories.RoleRepository;
 import com.clinique.app.ws.repositories.UserRepository;
 import com.clinique.app.ws.requests.UserRequest;
 import com.clinique.app.ws.responses.PatientResponse;
@@ -43,6 +46,7 @@ public class UserController {
 	
 	@Autowired
 	UserService userService ; //injection de dependance
+	
 	
 	
 	@GetMapping(path = "/{id}")
@@ -79,6 +83,40 @@ public class UserController {
 		userResponse.setPatientResponse(patientsResponses);
 		return new ResponseEntity<>(userResponse,HttpStatus.OK);
 
+	}
+	
+	@GetMapping(path = "/role/{roleId}")
+	public ResponseEntity<List<UserResponse>> getUsersByRole(@PathVariable String roleId){
+		List<UserDto> usersDtos = userService.getUsersByRole(roleId);
+		List<UserResponse> usersResponses = new ArrayList<>();
+		Iterator<UserDto> iterator = usersDtos.iterator();
+		while (iterator.hasNext()) {
+			UserDto userDto = iterator.next();
+			UserResponse userResponse = new UserResponse();
+			userResponse.setEmail(userDto.getEmail());
+			userResponse.setFirstName(userDto.getEmail());
+			userResponse.setLastName(userDto.getLastName());
+			RoleResponse roleResponse = new RoleResponse();
+			roleResponse.setName(userDto.getRole().getName());
+			roleResponse.setRoleId(userDto.getRole().getRoleId());
+			userResponse.setRole(roleResponse);
+			userResponse.setUserID(userDto.getUserID());
+			List<PatientResponse> patientsResponses = new ArrayList<>();
+			Iterator<PatientDto> patientIterator = userDto.getPatientDto().iterator();
+			while (iterator.hasNext()) {
+				PatientDto patientDto = patientIterator.next();
+				PatientResponse patientResponse = new PatientResponse();
+				patientResponse.setAdresse(patientDto.getAdresse());
+				patientResponse.setCin(patientDto.getCin());
+				patientResponse.setNom(patientDto.getNom());
+				patientResponse.setPatientId(patientDto.getPatientId());
+				patientResponse.setprenom(patientDto.getPrenom());
+				patientResponse.setTelephone(patientDto.getTelephone());
+				patientsResponses.add(patientResponse);
+			}
+			usersResponses.add(userResponse);
+		}
+		return new ResponseEntity<>(usersResponses,HttpStatus.OK);
 	}
 	
 	

@@ -18,5 +18,7 @@ public interface UserService extends UserDetailsService{
 	public void deleteUser(String userId);
 	
 	public List<UserDto> getUsers(int page, int limit);
+	
+	public List<UserDto> getUsersByRole(String roleId);
 
 }
