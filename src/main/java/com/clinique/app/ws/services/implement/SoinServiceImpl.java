@@ -1,6 +1,7 @@
 package com.clinique.app.ws.services.implement;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.clinique.app.ws.dto.SoinDto;
 import com.clinique.app.ws.dto.UserDto;
+import com.clinique.app.ws.entities.Dossier;
 import com.clinique.app.ws.entities.SoinEntity;
 import com.clinique.app.ws.entities.UserEntity;
 import com.clinique.app.ws.exception.UserException;
@@ -65,10 +67,12 @@ public class SoinServiceImpl implements SoinService {
 	public void deleteSoin(String soinId) {
 		SoinEntity soinEntity = soinRepository.findBySoinId(soinId);
 		if (soinEntity == null)  throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
-		soinEntity.getDossiers().stream().forEach(dossier -> {
+		Iterator<Dossier> iterator = soinEntity.getDossiers().iterator();
+		while (iterator.hasNext()) {
+			Dossier dossier = iterator.next();
 			dossier.removeSoin(soinEntity);
 			dossierRepository.save(dossier);
-		});
+		}
 		soinRepository.delete(soinEntity);
 	}
 

@@ -15,7 +15,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity(name = "Dossier")
@@ -31,11 +33,15 @@ public class Dossier implements Serializable {
 	@GeneratedValue
 	private long id;
 	
+	@OneToOne(mappedBy = "dossier", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private RdvEntity rdv;
+	
 	@Column(length = 100 ,nullable=false)
 	private String dossierId;
 	
-	@OneToMany(mappedBy = "dossier", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
-	private List<DossierMedicament> medicaments = new ArrayList<>();
+	@ManyToMany(fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@JoinTable(name = "dossiers_medicaments", joinColumns = {@JoinColumn(name="dossiers_id")}, inverseJoinColumns = {@JoinColumn(name="medicaments_id")})
+	private List<Medicament> medicaments = new ArrayList<>();
 	
 	@ManyToMany(fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "dossiers_soins", joinColumns = {@JoinColumn(name="dossiers_id")}, inverseJoinColumns = {@JoinColumn(name="soins_id")})
@@ -45,7 +51,43 @@ public class Dossier implements Serializable {
 	@JoinTable(name = "dossiers_scanners", joinColumns = {@JoinColumn(name="dossiers_id")}, inverseJoinColumns = {@JoinColumn(name="scanners_id")})
 	private Set<ScannerEntity> scanners = new HashSet<>();
 	
+	@ManyToOne()
+	@JoinColumn(name = "factureId")
+	private Facture facture;
 	
+	
+	public List<Medicament> getMedicaments() {
+		return medicaments;
+	}
+
+	public void setMedicaments(List<Medicament> medicaments) {
+		this.medicaments = medicaments;
+	}
+	
+	public void addMedicament(Medicament medicament) {
+		this.medicaments.add(medicament);
+		medicament.getDossiers().add(this);
+	}
+	
+	public void removeMedicament(Medicament medicament) {
+		this.getMedicaments().remove(medicament);
+		medicament.getDossiers().remove(this);
+	}
+	
+	public void removeMedicaments() {
+		for (Medicament medicament : new HashSet<>(medicaments)) {
+            removeMedicament(medicament);
+        }
+	}
+
+	public RdvEntity getRdv() {
+		return rdv;
+	}
+
+	public void setRdv(RdvEntity rdv) {
+		this.rdv = rdv;
+	}
+
 	public Set<SoinEntity> getSoins() {
 		return soins;
 	}
@@ -93,36 +135,6 @@ public class Dossier implements Serializable {
             removeScanner(scanner);
         }
 	}
-	
-	public List<DossierMedicament> getMedicaments() {
-		return medicaments;
-	}
-
-	public void setMedicaments(List<DossierMedicament> medicaments) {
-		this.medicaments = medicaments;
-	}
-	
-	public DossierMedicament addMedicament(Medicament medicament, int qty) {
-		DossierMedicament dossierMedicament = new DossierMedicament(this, medicament, qty);
-		this.medicaments.add(dossierMedicament);
-		medicament.getDossiers().add(dossierMedicament);
-		return dossierMedicament;
-	}
-	
-	public void removeMedicament(DossierMedicament medicament) {
-		for (Iterator<DossierMedicament> iterator = this.medicaments.iterator();
-	             iterator.hasNext(); ) {
-	            DossierMedicament dossierMedicament = iterator.next();
-	 
-	            if (dossierMedicament.getDossier().equals(this) &&
-	                    dossierMedicament.getMedicament().equals(medicament)) {
-	                iterator.remove();
-	                dossierMedicament.getMedicament().getDossiers().remove(dossierMedicament);
-	                dossierMedicament.setMedicament(null);
-	                dossierMedicament.setDossier(null);
-	            }
-	        }
-	}
 
 
 	public long getId() {
@@ -139,6 +151,14 @@ public class Dossier implements Serializable {
 
 	public void setDossierId(String dossierId) {
 		this.dossierId = dossierId;
+	}
+
+	public Facture getFacture() {
+		return facture;
+	}
+
+	public void setFacture(Facture facture) {
+		this.facture = facture;
 	}
 	
 	

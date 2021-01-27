@@ -3,6 +3,7 @@ package com.clinique.app.ws.entities;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import com.clinique.app.ws.shared.DateDeSerializer;
 import com.clinique.app.ws.shared.State;
@@ -58,6 +60,18 @@ public class RdvEntity  implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private State state;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "dossier_id", referencedColumnName = "id")
+	private Dossier dossier;
+
+	public Dossier getDossier() {
+		return dossier;
+	}
+
+	public void setDossier(Dossier dossier) {
+		this.dossier = dossier;
+	}
 
 	public State getState() {
 		return state;

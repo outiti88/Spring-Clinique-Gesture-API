@@ -1,29 +1,32 @@
 package com.clinique.app.ws.services.implement;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.clinique.app.ws.dto.DosMedDto;
 import com.clinique.app.ws.dto.DossierDto;
+import com.clinique.app.ws.dto.MedicamentDto;
+import com.clinique.app.ws.dto.PatientDto;
+import com.clinique.app.ws.dto.RdvDto;
 import com.clinique.app.ws.dto.RoleDto;
 import com.clinique.app.ws.dto.ScannerDto;
 import com.clinique.app.ws.dto.SoinDto;
 import com.clinique.app.ws.dto.UserDto;
 import com.clinique.app.ws.entities.Dossier;
-import com.clinique.app.ws.entities.DossierMedicament;
 import com.clinique.app.ws.entities.Medicament;
+import com.clinique.app.ws.entities.RdvEntity;
 import com.clinique.app.ws.entities.ScannerEntity;
 import com.clinique.app.ws.entities.SoinEntity;
 import com.clinique.app.ws.exception.UserException;
-import com.clinique.app.ws.repositories.DossierMedicamentRepository;
 import com.clinique.app.ws.repositories.DossierRepository;
 import com.clinique.app.ws.repositories.MedicamentRepository;
+import com.clinique.app.ws.repositories.RdvRepository;
 import com.clinique.app.ws.repositories.ScannerRepository;
 import com.clinique.app.ws.repositories.SoinRepository;
-import com.clinique.app.ws.requests.DosMedRequest;
 import com.clinique.app.ws.responses.errors.ErrorMessages;
 import com.clinique.app.ws.services.DossierService;
 import com.clinique.app.ws.shared.Utils;
@@ -38,28 +41,24 @@ public class DossierServiceImpl implements DossierService{
 	MedicamentRepository medicamentRepository;
 	
 	@Autowired
-	DossierMedicamentRepository dossierMedicamentRepository;
+	ScannerRepository scannerRepository;
 	
 	@Autowired
-	ScannerRepository scannerRepository;
+	RdvRepository rdvRepository;
 	
 	@Autowired
 	SoinRepository soinRepository;
 	
 	@Autowired
 	Utils util;
-	
-	List<DossierMedicament> dossierMedicament = new ArrayList<>();
 
 	@Override
 	public DossierDto addDossier(DossierDto dossierDto) {
 		Dossier dossier = mapDtoToEntity(dossierDto);
-		Dossier createdDossier = dossierRepository.save(dossier);
-		this.dossierMedicament.stream().forEach(dm -> {
-			dm.getDossier().setId(createdDossier.getId());
-			dossierMedicamentRepository.save(dm);
-		});
-		dossierDto = mapEntityToDto(dossier);
+		dossier.getRdv().setDossier(dossier);
+		RdvEntity createdRdv = rdvRepository.save(dossier.getRdv());
+		//Dossier createdDossier = dossierRepository.save(dossier);
+		dossierDto = mapEntityToDto(createdRdv.getDossier());
 		return dossierDto;
 	}
 
@@ -71,11 +70,7 @@ public class DossierServiceImpl implements DossierService{
 		dossier = mapDtoToEntity(dossierDto);
 		dossier.setId(id);
 		Dossier updatedDossier = dossierRepository.save(dossier);
-		this.dossierMedicament.stream().forEach(dm -> {
-			dm.getDossier().setId(updatedDossier.getId());
-			dossierMedicamentRepository.save(dm);
-		});
-		dossierDto = mapEntityToDto(dossier);
+		dossierDto = mapEntityToDto(updatedDossier);
 		return dossierDto;
 	}
 
@@ -93,22 +88,27 @@ public class DossierServiceImpl implements DossierService{
 	public void deleteDossier(String dossierId) {
 		Dossier dossier = dossierRepository.findByDossierId(dossierId);
 		if (dossier == null)  throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		if (dossier.getRdv() != null) {
+			RdvEntity rdvEntity = rdvRepository.findByRdvId(dossier.getRdv().getRdvId());
+			rdvEntity.setDossier(null);
+			rdvRepository.save(rdvEntity);
+		}
 		dossierRepository.delete(dossier);
 	}
 	
 	private Dossier mapDtoToEntity(DossierDto dossierDto) {
 		Dossier dossier = new Dossier();
+		RdvEntity rdvEntity = rdvRepository.findByRdvId(dossierDto.getRdvDto().getRdvId());
+		dossier.setRdv(rdvEntity);
 		dossier.getMedicaments().clear();
 		if (dossierDto.getDossierId() == null) {
 			dossier.setDossierId(util.generateStringId(32));
 		}else {
 			dossier.setDossierId(dossierDto.getDossierId());
 		}
-		this.dossierMedicament.clear();
-		dossierDto.getDosMedDtos().stream().forEach(dosMedDto -> {
-			Medicament medicament = medicamentRepository.findByMedicamentId(dosMedDto.getMedicamentDto().getMedicamentId());
-			DossierMedicament dossierMedicament = dossier.addMedicament(medicament, dosMedDto.getQty());
-			this.dossierMedicament.add(dossierMedicament);
+		dossierDto.getMedicamentsDtos().stream().forEach(medicamentDto -> {
+			Medicament medicament = medicamentRepository.findByMedicamentId(medicamentDto.getMedicamentId());
+			dossier.getMedicaments().add(medicament);
 		});
 		dossierDto.getScannersDtos().stream().forEach(scannerDto -> {
 			ScannerEntity scanner = scannerRepository.findByScannerId(scannerDto.getScannerId());
@@ -123,17 +123,28 @@ public class DossierServiceImpl implements DossierService{
 	
 	private DossierDto mapEntityToDto(Dossier dossier) {
 		DossierDto dossierDto = new DossierDto();
+		RdvDto rdvDto = new RdvDto();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+		ModelMapper modelMapper = new ModelMapper();
+		rdvDto.setDate(dateFormat.format(dossier.getRdv().getDate()));
+		rdvDto.setEndTime(timeFormat.format(dossier.getRdv().getEndTime()));
+		rdvDto.setMotif(dossier.getRdv().getMotif());
+		rdvDto.setRdvId(dossier.getRdv().getRdvId());
+		rdvDto.setStartTime(timeFormat.format(dossier.getRdv().getStartTime()));
+		rdvDto.setState(dossier.getRdv().getState().toString());
+		rdvDto.setMedecin(modelMapper.map(dossier.getRdv().getMedecin(), UserDto.class));
+		rdvDto.setPatient(modelMapper.map(dossier.getRdv().getPatient(), PatientDto.class));
+		dossierDto.setRdvDto(rdvDto);
 		dossierDto.setDossierId(dossier.getDossierId());
-		dossierDto.getDosMedDtos().clear();
-		dossier.getMedicaments().stream().forEach(dossierMedicament ->{
-			DosMedDto dosMedDto = new DosMedDto();
-			dosMedDto.getMedicamentDto().setCategory(dossierMedicament.getMedicament().getCategory());
-			dosMedDto.getMedicamentDto().setMedicamentId(dossierMedicament.getMedicament().getMedicamentId());
-			dosMedDto.getMedicamentDto().setName(dossierMedicament.getMedicament().getName());
-			dosMedDto.getMedicamentDto().setPrice(dossierMedicament.getMedicament().getPrice());
-			dosMedDto.getMedicamentDto().setType(dossierMedicament.getMedicament().getType());
-			dosMedDto.setQty(dossierMedicament.getQty());
-			dossierDto.getDosMedDtos().add(dosMedDto);
+		dossier.getMedicaments().stream().forEach(medicament ->{
+			MedicamentDto medicamentDto = new MedicamentDto();
+			medicamentDto.setCategory(medicament.getCategory());
+			medicamentDto.setMedicamentId(medicament.getMedicamentId());
+			medicamentDto.setName(medicament.getName());
+			medicamentDto.setPrice(medicament.getPrice());
+			medicamentDto.setType(medicament.getType());
+			dossierDto.getMedicamentsDtos().add(medicamentDto);
 		});
 		dossier.getScanners().stream().forEach(scanner -> {
 			ScannerDto scannerDto = new ScannerDto();

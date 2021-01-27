@@ -86,7 +86,7 @@ public class UserController {
 			UserResponse userResponse = modelMapper.map(createUser, UserResponse.class);
 
 			
-			return new ResponseEntity<>(userResponse,HttpStatus.CREATED) ; 
+			return new ResponseEntity<>(userResponse,HttpStatus.CREATED);
 		//}
 		
 		//return new ResponseEntity<>(HttpStatus.UNAUTHORIZED) ; 

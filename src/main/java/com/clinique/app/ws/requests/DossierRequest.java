@@ -4,16 +4,25 @@ import java.util.Set;
 
 public class DossierRequest {
 
-	private Set<DosMedRequest> dosMedRequests;
+	private Set<String> medicamentsIds;
 	private Set<String> scannersIds;
 	private Set<String> soinsIds;
+	private String rdvId;
 
-	public Set<DosMedRequest> getDosMedRequests() {
-		return dosMedRequests;
+	public Set<String> getMedicamentsIds() {
+		return medicamentsIds;
 	}
 
-	public void setDosMedRequests(Set<DosMedRequest> dosMedRequests) {
-		this.dosMedRequests = dosMedRequests;
+	public void setMedicamentsIds(Set<String> medicamentsIds) {
+		this.medicamentsIds = medicamentsIds;
+	}
+
+	public String getRdvId() {
+		return rdvId;
+	}
+
+	public void setRdvId(String rdvId) {
+		this.rdvId = rdvId;
 	}
 
 	public Set<String> getScannersIds() {

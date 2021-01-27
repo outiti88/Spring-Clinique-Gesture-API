@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.clinique.app.ws.dto.DossierDto;
 import com.clinique.app.ws.dto.PatientDto;
 import com.clinique.app.ws.dto.RdvDto;
 import com.clinique.app.ws.dto.UserDto;
@@ -18,6 +19,7 @@ import com.clinique.app.ws.entities.PatientEntity;
 import com.clinique.app.ws.entities.RdvEntity;
 import com.clinique.app.ws.entities.UserEntity;
 import com.clinique.app.ws.exception.UserException;
+import com.clinique.app.ws.repositories.DossierRepository;
 import com.clinique.app.ws.repositories.PatientRepository;
 import com.clinique.app.ws.repositories.RdvRepository;
 import com.clinique.app.ws.repositories.UserRepository;

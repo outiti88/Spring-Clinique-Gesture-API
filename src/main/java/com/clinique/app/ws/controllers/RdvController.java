@@ -48,7 +48,7 @@ public class RdvController {
 		RdvDto createRdv = rdvService.createRdv(rdvDto);
 		ModelMapper modelMapper = new ModelMapper();
 		RdvResponse rdvResponse = modelMapper.map(createRdv, RdvResponse.class);
-		return new ResponseEntity<>(rdvResponse, HttpStatus.CREATED); 
+		return new ResponseEntity<>(rdvResponse, HttpStatus.CREATED);
 	}
 	
 	@GetMapping

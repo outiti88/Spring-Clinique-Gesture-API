@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -16,9 +17,6 @@ import javax.persistence.Table;
 @Table(name = "medicament")
 public class Medicament implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -4623603762379103626L;
 
 	@Id
@@ -40,8 +38,16 @@ public class Medicament implements Serializable {
 	@Column(nullable = false)
 	private float price;
 	
-	@OneToMany(mappedBy = "medicament", fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	private List<DossierMedicament> dossiers = new ArrayList<>();
+	@ManyToMany(mappedBy = "medicaments", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+	private List<Dossier> dossiers = new ArrayList<>();
+
+	public List<Dossier> getDossiers() {
+		return dossiers;
+	}
+
+	public void setDossiers(List<Dossier> dossiers) {
+		this.dossiers = dossiers;
+	}
 
 	public long getId() {
 		return id;
@@ -91,12 +97,5 @@ public class Medicament implements Serializable {
 		this.price = price;
 	}
 
-	public List<DossierMedicament> getDossiers() {
-		return dossiers;
-	}
-
-	public void setDossiers(List<DossierMedicament> dossiers) {
-		this.dossiers = dossiers;
-	}
 	
 }

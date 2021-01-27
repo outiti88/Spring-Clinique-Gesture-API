@@ -1,15 +1,13 @@
 package com.clinique.app.ws.services.implement;
-
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.clinique.app.ws.dto.MedicamentDto;
+import com.clinique.app.ws.entities.Dossier;
 import com.clinique.app.ws.entities.Medicament;
 import com.clinique.app.ws.exception.UserException;
-import com.clinique.app.ws.repositories.DossierMedicamentRepository;
 import com.clinique.app.ws.repositories.DossierRepository;
 import com.clinique.app.ws.repositories.MedicamentRepository;
 import com.clinique.app.ws.responses.errors.ErrorMessages;
@@ -24,9 +22,6 @@ public class MedicamentServiceImpl implements MedicamentService{
 	
 	@Autowired
 	DossierRepository dossierRepository;
-	
-	@Autowired
-	DossierMedicamentRepository dossierMedicamentRepository;
 	
 	@Autowired
 	Utils util;
@@ -68,7 +63,13 @@ public class MedicamentServiceImpl implements MedicamentService{
 	public void deleteMedicament(String medicamentId) {
 		Medicament medicament = medicamentRepository.findByMedicamentId(medicamentId);
 		if (medicament == null) throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
-		dossierMedicamentRepository.deleteDossierMedicamentByMedicamentId(medicament.getId());
+		Iterator<Dossier> iterator = medicament.getDossiers().iterator();
+		while (iterator.hasNext()) {
+			Dossier dossier = iterator.next();
+			dossier.removeMedicament(medicament);
+			dossierRepository.save(dossier);
+			
+		}
 		medicamentRepository.delete(medicament);
 	}
 	

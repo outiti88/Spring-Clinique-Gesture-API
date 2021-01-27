@@ -8,21 +8,28 @@ import java.util.Set;
 public class DossierResponse {
 
 	private String dossierId;
-	private List<DosMedResponse> dosMedResponses = new ArrayList<DosMedResponse>();
+	private List<MedicamentResponse> medicamentsResponses = new ArrayList<MedicamentResponse>();
 	private Set<ScannerResponse> scannersResponses = new HashSet<ScannerResponse>();
 	private Set<SoinResponse> soinsResponses = new HashSet<SoinResponse>();
+	private RdvResponse rdvResponse;
 	
+	public List<MedicamentResponse> getMedicamentsResponses() {
+		return medicamentsResponses;
+	}
+	public void setMedicamentsResponses(List<MedicamentResponse> medicamentsResponses) {
+		this.medicamentsResponses = medicamentsResponses;
+	}
+	public RdvResponse getRdvResponse() {
+		return rdvResponse;
+	}
+	public void setRdvResponse(RdvResponse rdvResponse) {
+		this.rdvResponse = rdvResponse;
+	}
 	public String getDossierId() {
 		return dossierId;
 	}
 	public void setDossierId(String dossierId) {
 		this.dossierId = dossierId;
-	}
-	public List<DosMedResponse> getDosMedResponses() {
-		return dosMedResponses;
-	}
-	public void setDosMedResponses(List<DosMedResponse> dosMedResponses) {
-		this.dosMedResponses = dosMedResponses;
 	}
 	public Set<ScannerResponse> getScannersResponses() {
 		return scannersResponses;
