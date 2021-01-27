@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -139,6 +140,35 @@ public class RdvServiceImpl implements RdvService {
 			RdvDto rdvDto = mapEntityToDto(rdv);
 			rdvsDtos.add(rdvDto);
 		});
+		return rdvsDtos;
+	}
+
+
+	@Override
+	public List<RdvDto> getRdvsByMedecin(String medecinId) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+		ModelMapper modelMapper = new ModelMapper();
+		UserEntity userEntity = userRepository.findByUserID(medecinId);
+		List<RdvEntity> rdvs = rdvRepository.findByMedecin(userEntity);
+		List<RdvDto> rdvsDtos = new ArrayList<>();
+		Iterator<RdvEntity> iterator = rdvs.iterator();
+		while (iterator.hasNext()) {
+			RdvEntity rdvEntity = iterator.next();
+			RdvDto rdvDto = new RdvDto();
+			String date = dateFormat.format(rdvEntity.getDate());
+			String startTime = timeFormat.format(rdvEntity.getStartTime());
+			String endTime = timeFormat.format(rdvEntity.getEndTime());
+			rdvDto.setDate(date);
+			rdvDto.setEndTime(endTime);
+			rdvDto.setRdvId(rdvEntity.getRdvId());
+			rdvDto.setMedecin(modelMapper.map(rdvEntity.getMedecin(), UserDto.class));
+			rdvDto.setPatient(modelMapper.map(rdvEntity.getPatient(), PatientDto.class));
+			rdvDto.setStartTime(startTime);
+			rdvDto.setMotif(rdvEntity.getMotif());
+			rdvDto.setState(rdvEntity.getState().toString());
+			rdvsDtos.add(rdvDto);
+		}
 		return rdvsDtos;
 	}
 

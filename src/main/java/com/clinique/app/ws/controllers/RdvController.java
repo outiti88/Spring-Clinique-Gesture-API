@@ -1,6 +1,7 @@
 package com.clinique.app.ws.controllers;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -24,7 +25,10 @@ import com.clinique.app.ws.dto.PatientDto;
 import com.clinique.app.ws.dto.RdvDto;
 import com.clinique.app.ws.dto.UserDto;
 import com.clinique.app.ws.requests.RdvRequest;
+import com.clinique.app.ws.responses.PatientResponse;
 import com.clinique.app.ws.responses.RdvResponse;
+import com.clinique.app.ws.responses.RoleResponse;
+import com.clinique.app.ws.responses.UserResponse;
 import com.clinique.app.ws.services.RdvService;
 
 @CrossOrigin(origins = "http://localhost:4200/")
@@ -49,6 +53,55 @@ public class RdvController {
 		ModelMapper modelMapper = new ModelMapper();
 		RdvResponse rdvResponse = modelMapper.map(createRdv, RdvResponse.class);
 		return new ResponseEntity<>(rdvResponse, HttpStatus.CREATED);
+	}
+	
+	@GetMapping(path = "/medecin/{medecinId}")
+	public ResponseEntity<List<RdvResponse>> getRdvsByMedecin(@PathVariable String medecinId){
+		List<RdvDto> rdvsDtos = rdvService.getRdvsByMedecin(medecinId);
+		List<RdvResponse> rdvsResponses = new ArrayList<RdvResponse>();
+		Iterator<RdvDto> iterator = rdvsDtos.iterator();
+		while (iterator.hasNext()) {
+			RdvDto rdvDto = iterator.next();
+			RdvResponse rdvResponse = new RdvResponse();
+			rdvResponse.setDate(rdvDto.getDate());
+			rdvResponse.setEndTime(rdvDto.getEndTime());
+			rdvResponse.setMotif(rdvDto.getMotif());
+			rdvResponse.setRdvId(rdvDto.getRdvId());
+			rdvResponse.setStartTime(rdvDto.getStartTime());
+			rdvResponse.setState(rdvDto.getState());
+			UserResponse medecinResponse = new UserResponse();
+			medecinResponse.setEmail(rdvDto.getMedecin().getEmail());
+			medecinResponse.setFirstName(rdvDto.getMedecin().getFirstName());
+			medecinResponse.setLastName(rdvDto.getMedecin().getLastName());
+			medecinResponse.setUserID(rdvDto.getMedecin().getUserID());
+			RoleResponse roleResponse = new RoleResponse();
+			roleResponse.setName(rdvDto.getMedecin().getRole().getName());
+			roleResponse.setRoleId(rdvDto.getMedecin().getRole().getRoleId());
+			medecinResponse.setRole(roleResponse);
+			rdvResponse.setMedecin(medecinResponse);
+			PatientResponse patientResponse = new PatientResponse();
+			patientResponse.setAdresse(rdvDto.getPatient().getAdresse());
+			patientResponse.setCin(rdvDto.getPatient().getCin());
+			patientResponse.setNom(rdvDto.getPatient().getNom());
+			patientResponse.setPatientId(rdvDto.getPatient().getPatientId());
+			patientResponse.setprenom(rdvDto.getPatient().getPrenom());
+			patientResponse.setTelephone(rdvDto.getPatient().getTelephone());
+			rdvDto.getPatient().getUsers().stream().forEach(userDto -> {
+				UserResponse userR = new UserResponse();
+				userR.setEmail(userDto.getEmail());
+				userR.setFirstName(userDto.getFirstName());
+				userR.setLastName(userDto.getLastName());
+				userR.setUserID(userDto.getUserID());
+				RoleResponse roleR = new RoleResponse();
+				roleR.setName(userDto.getRole().getName());
+				roleR.setRoleId(userDto.getRole().getRoleId());
+				userR.setRole(roleR);
+				patientResponse.getUsers().add(userR);
+			});
+			rdvResponse.setPatient(patientResponse);
+			rdvsResponses.add(rdvResponse);
+		}
+		return new ResponseEntity<List<RdvResponse>>(rdvsResponses,HttpStatus.OK);
 	}
 	
 	@GetMapping

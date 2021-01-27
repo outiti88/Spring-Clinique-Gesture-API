@@ -10,5 +10,6 @@ public interface RdvService {
 	public RdvDto updateRdv(RdvDto rdvDto, String rdvId);
 	public void deleteRdv(String rdvId);
 	public List<RdvDto> getRdvs();
+	public List<RdvDto> getRdvsByMedecin(String medecinId);
 
 }
