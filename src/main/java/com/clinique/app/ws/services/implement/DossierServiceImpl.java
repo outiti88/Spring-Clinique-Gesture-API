@@ -93,6 +93,10 @@ public class DossierServiceImpl implements DossierService{
 			rdvEntity.setDossier(null);
 			rdvRepository.save(rdvEntity);
 		}
+		if (dossier.getFacture() != null) {
+			dossier.setFacture(null);
+			dossierRepository.save(dossier);
+		}
 		dossierRepository.delete(dossier);
 	}
 	
