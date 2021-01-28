@@ -172,4 +172,29 @@ public class RdvServiceImpl implements RdvService {
 		return rdvsDtos;
 	}
 
+
+	@Override
+	public List<RdvDto> filterRdv(String date, String startTime, String endTime, String motif, String state) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+		ModelMapper modelMapper = new ModelMapper();
+		List<RdvEntity> rdvs = rdvRepository.filterRdv(date, startTime, endTime, motif, state);
+		List<RdvDto> rdvDtos = new ArrayList<>();
+		Iterator<RdvEntity> iterator = rdvs.iterator();
+		while (iterator.hasNext()) {
+			RdvEntity rdvEntity = iterator.next();
+			RdvDto rdvDto = new RdvDto();
+			rdvDto.setDate(dateFormat.format(rdvEntity.getDate()));
+			rdvDto.setEndTime(timeFormat.format(rdvEntity.getEndTime()));
+			rdvDto.setRdvId(rdvEntity.getRdvId());
+			rdvDto.setMedecin(modelMapper.map(rdvEntity.getMedecin(), UserDto.class));
+			rdvDto.setPatient(modelMapper.map(rdvEntity.getPatient(), PatientDto.class));
+			rdvDto.setStartTime(timeFormat.format(rdvEntity.getStartTime()));
+			rdvDto.setMotif(rdvEntity.getMotif());
+			rdvDto.setState(rdvEntity.getState().toString());
+			rdvDtos.add(rdvDto);
+		}
+		return rdvDtos;
+	}
+
 }

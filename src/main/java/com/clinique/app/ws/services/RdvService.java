@@ -11,5 +11,5 @@ public interface RdvService {
 	public void deleteRdv(String rdvId);
 	public List<RdvDto> getRdvs();
 	public List<RdvDto> getRdvsByMedecin(String medecinId);
-
+	public List<RdvDto> filterRdv(String date, String startTime, String endTime, String motif, String state);
 }
