@@ -18,13 +18,21 @@ import org.springframework.stereotype.Service;
 import com.clinique.app.ws.dto.PatientDto;
 import com.clinique.app.ws.dto.RoleDto;
 import com.clinique.app.ws.dto.UserDto;
+import com.clinique.app.ws.entities.Dossier;
 import com.clinique.app.ws.entities.PatientEntity;
+import com.clinique.app.ws.entities.RdvEntity;
 import com.clinique.app.ws.entities.RoleEntity;
+import com.clinique.app.ws.entities.SoinEntity;
 import com.clinique.app.ws.entities.UserEntity;
 import com.clinique.app.ws.exception.UserException;
+import com.clinique.app.ws.repositories.DossierRepository;
+import com.clinique.app.ws.repositories.PatientRepository;
+import com.clinique.app.ws.repositories.RdvRepository;
 import com.clinique.app.ws.repositories.RoleRepository;
+import com.clinique.app.ws.repositories.SoinRepository;
 import com.clinique.app.ws.repositories.UserRepository;
 import com.clinique.app.ws.responses.errors.ErrorMessages;
+import com.clinique.app.ws.services.SoinService;
 import com.clinique.app.ws.services.UserService;
 import com.clinique.app.ws.shared.Utils;
 
@@ -42,6 +50,18 @@ public class UserServiceImp implements UserService {
 	
 	@Autowired
 	RoleRepository roleRepository;
+	
+	@Autowired
+	PatientRepository patientRepository;
+	
+	@Autowired
+	RdvRepository rdvRepository;
+	
+	@Autowired
+	DossierRepository dossierRepository;
+	
+	@Autowired
+	SoinRepository soinRepository;
 
 	@Override
 	public UserDto createUser(UserDto userDto) {
@@ -156,7 +176,33 @@ public class UserServiceImp implements UserService {
 	public void deleteUser(String userId) {
 		UserEntity userEntity = userRepository.findByUserID(userId);
 		if(userEntity == null) throw new UsernameNotFoundException(userId);
-		
+		Iterator<PatientEntity> patientIterator = userEntity.getPatients().iterator();
+		while (patientIterator.hasNext()) {
+			PatientEntity patientEntity = patientIterator.next();
+			patientEntity.removeUser(userEntity);
+			patientRepository.save(patientEntity);
+		}
+		Iterator<RdvEntity> rdvIterator = userEntity.getRdvs().iterator();
+		while (rdvIterator.hasNext()) {
+			RdvEntity rdvEntity = rdvIterator.next();
+			rdvEntity.setMedecin(null);
+			rdvEntity.setPatient(null);
+			rdvEntity.setDossier(null);
+			rdvRepository.save(rdvEntity);
+			rdvRepository.deleteRdvByRdvId(rdvEntity.getRdvId());
+		}
+		Iterator<SoinEntity> soinIterator = userEntity.getSoins().iterator();
+		while (soinIterator.hasNext()) {
+			SoinEntity soinEntity = soinIterator.next();
+			soinEntity.setMedecin(null);
+			Iterator<Dossier> iterator = soinEntity.getDossiers().iterator();
+			while (iterator.hasNext()) {
+				Dossier dossier = iterator.next();
+				dossier.removeSoin(soinEntity);
+				dossierRepository.save(dossier);
+			}
+			soinRepository.deleteSoinBySoinId(soinEntity.getSoinId());
+		}
 		userRepository.delete(userEntity);
 	}
 

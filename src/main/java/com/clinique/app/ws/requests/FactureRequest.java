@@ -15,10 +15,10 @@ public class FactureRequest {
 	public void setTotalPrice(float totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-	public boolean isPaid() {
+	public boolean getIsPaid() {
 		return isPaid;
 	}
-	public void setPaid(boolean isPaid) {
+	public void setIsPaid(boolean isPaid) {
 		this.isPaid = isPaid;
 	}
 	public List<String> getDossiersIds() {

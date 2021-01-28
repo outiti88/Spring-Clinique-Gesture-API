@@ -1,6 +1,7 @@
 package com.clinique.app.ws.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -35,7 +36,7 @@ public class Facture implements Serializable{
 	private boolean isPaid;
 	
 	@OneToMany(mappedBy = "facture", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	private List<Dossier> dossiers;
+	private List<Dossier> dossiers = new ArrayList<>();
 
 	public long getId() {
 		return id;

@@ -123,19 +123,21 @@ public class DossierServiceImpl implements DossierService{
 	
 	private DossierDto mapEntityToDto(Dossier dossier) {
 		DossierDto dossierDto = new DossierDto();
-		RdvDto rdvDto = new RdvDto();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		DateFormat timeFormat = new SimpleDateFormat("HH:mm");
 		ModelMapper modelMapper = new ModelMapper();
-		rdvDto.setDate(dateFormat.format(dossier.getRdv().getDate()));
-		rdvDto.setEndTime(timeFormat.format(dossier.getRdv().getEndTime()));
-		rdvDto.setMotif(dossier.getRdv().getMotif());
-		rdvDto.setRdvId(dossier.getRdv().getRdvId());
-		rdvDto.setStartTime(timeFormat.format(dossier.getRdv().getStartTime()));
-		rdvDto.setState(dossier.getRdv().getState().toString());
-		rdvDto.setMedecin(modelMapper.map(dossier.getRdv().getMedecin(), UserDto.class));
-		rdvDto.setPatient(modelMapper.map(dossier.getRdv().getPatient(), PatientDto.class));
-		dossierDto.setRdvDto(rdvDto);
+		if (dossier.getRdv() != null) {
+			RdvDto rdvDto = new RdvDto();
+			rdvDto.setDate(dateFormat.format(dossier.getRdv().getDate()));
+			rdvDto.setEndTime(timeFormat.format(dossier.getRdv().getEndTime()));
+			rdvDto.setMotif(dossier.getRdv().getMotif());
+			rdvDto.setRdvId(dossier.getRdv().getRdvId());
+			rdvDto.setStartTime(timeFormat.format(dossier.getRdv().getStartTime()));
+			rdvDto.setState(dossier.getRdv().getState().toString());
+			rdvDto.setMedecin(modelMapper.map(dossier.getRdv().getMedecin(), UserDto.class));
+			rdvDto.setPatient(modelMapper.map(dossier.getRdv().getPatient(), PatientDto.class));
+			dossierDto.setRdvDto(rdvDto);
+		}
 		dossierDto.setDossierId(dossier.getDossierId());
 		dossier.getMedicaments().stream().forEach(medicament ->{
 			MedicamentDto medicamentDto = new MedicamentDto();

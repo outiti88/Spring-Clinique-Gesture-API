@@ -2,20 +2,24 @@ package com.clinique.app.ws.services.implement;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.source.IterableConfigurationPropertySource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.clinique.app.ws.dto.PatientDto;
 import com.clinique.app.ws.dto.UserDto;
 import com.clinique.app.ws.entities.PatientEntity;
+import com.clinique.app.ws.entities.RdvEntity;
 import com.clinique.app.ws.entities.UserEntity;
 import com.clinique.app.ws.exception.UserException;
 import com.clinique.app.ws.repositories.PatientRepository;
+import com.clinique.app.ws.repositories.RdvRepository;
 import com.clinique.app.ws.repositories.UserRepository;
 import com.clinique.app.ws.responses.errors.ErrorMessages;
 import com.clinique.app.ws.services.PatientService;
@@ -30,6 +34,9 @@ public class PatientServiceImp implements PatientService {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	RdvRepository rdvRepository;
 	
 	@Autowired
 	Utils util;
@@ -62,7 +69,18 @@ public class PatientServiceImp implements PatientService {
 	public void deletePatient(String patientId) {
 		PatientEntity patientEntity = patientRepo.findByPatientId(patientId);
 		if(patientEntity == null) throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
-		
+		Iterator<UserEntity> usersIterator = patientEntity.getUsers().iterator();
+		while (usersIterator.hasNext()) {
+			UserEntity userEntity = usersIterator.next();
+			userEntity.getPatients().remove(patientEntity);
+			userRepository.save(userEntity);
+		}
+		Iterator<RdvEntity> rdvIterator = patientEntity.getRdv().iterator();
+		while (rdvIterator.hasNext()) {
+			RdvEntity rdvEntity = rdvIterator.next();
+			rdvEntity.setPatient(null);
+			rdvRepository.save(rdvEntity);
+		}		
 		patientRepo.delete(patientEntity);
 		
 	}

@@ -67,6 +67,7 @@ public class SoinServiceImpl implements SoinService {
 	public void deleteSoin(String soinId) {
 		SoinEntity soinEntity = soinRepository.findBySoinId(soinId);
 		if (soinEntity == null)  throw new UserException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		soinEntity.setMedecin(null);
 		Iterator<Dossier> iterator = soinEntity.getDossiers().iterator();
 		while (iterator.hasNext()) {
 			Dossier dossier = iterator.next();

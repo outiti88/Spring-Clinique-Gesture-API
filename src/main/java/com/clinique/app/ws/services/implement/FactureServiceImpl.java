@@ -122,7 +122,9 @@ public class FactureServiceImpl implements FactureService{
 		}
 		facture.setPaid(factureDto.isPaid());
 		facture.setTotalPrice(factureDto.getTotalPrice());
-		facture.getDossiers().clear();
+		if (facture.getDossiers() != null) {
+			facture.getDossiers().clear();
+		}
 		Iterator<DossierDto> iterator = factureDto.getDossiersDtos().iterator();
 		while (iterator.hasNext()) {
 			DossierDto dossierDto = iterator.next();
@@ -141,19 +143,21 @@ public class FactureServiceImpl implements FactureService{
 		while (iterator.hasNext()) {
 			DossierDto dossierDto = new DossierDto();
 			Dossier dossier = iterator.next();
-			RdvDto rdvDto = new RdvDto();
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			DateFormat timeFormat = new SimpleDateFormat("HH:mm");
-			ModelMapper modelMapper = new ModelMapper();
-			rdvDto.setDate(dateFormat.format(dossier.getRdv().getDate()));
-			rdvDto.setEndTime(timeFormat.format(dossier.getRdv().getEndTime()));
-			rdvDto.setMotif(dossier.getRdv().getMotif());
-			rdvDto.setRdvId(dossier.getRdv().getRdvId());
-			rdvDto.setStartTime(timeFormat.format(dossier.getRdv().getStartTime()));
-			rdvDto.setState(dossier.getRdv().getState().toString());
-			rdvDto.setMedecin(modelMapper.map(dossier.getRdv().getMedecin(), UserDto.class));
-			rdvDto.setPatient(modelMapper.map(dossier.getRdv().getPatient(), PatientDto.class));
-			dossierDto.setRdvDto(rdvDto);
+			if (dossier.getRdv() != null) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+				ModelMapper modelMapper = new ModelMapper();
+				RdvDto rdvDto = new RdvDto();
+				rdvDto.setDate(dateFormat.format(dossier.getRdv().getDate()));
+				rdvDto.setEndTime(timeFormat.format(dossier.getRdv().getEndTime()));
+				rdvDto.setMotif(dossier.getRdv().getMotif());
+				rdvDto.setRdvId(dossier.getRdv().getRdvId());
+				rdvDto.setStartTime(timeFormat.format(dossier.getRdv().getStartTime()));
+				rdvDto.setState(dossier.getRdv().getState().toString());
+				rdvDto.setMedecin(modelMapper.map(dossier.getRdv().getMedecin(), UserDto.class));
+				rdvDto.setPatient(modelMapper.map(dossier.getRdv().getPatient(), PatientDto.class));
+				dossierDto.setRdvDto(rdvDto);
+			}
 			dossierDto.setDossierId(dossier.getDossierId());
 			dossier.getMedicaments().stream().forEach(medicament ->{
 				MedicamentDto medicamentDto = new MedicamentDto();
