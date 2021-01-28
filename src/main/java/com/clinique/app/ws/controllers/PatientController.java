@@ -52,25 +52,25 @@ public class PatientController {
 	@GetMapping
 	public ResponseEntity<List<PatientResponse>> getPatients(Principal principal) {
 		
-		UserDto currentUser = userService.getUserByUserId(principal.getName());
-		if(currentUser.getRole().getName().equals("gp") || currentUser.getRole().getName().equals("medecin")) {
+		//UserDto currentUser = userService.getUserByUserId(principal.getName());
+		//if(currentUser.getRole().getName().equals("gp") || currentUser.getRole().getName().equals("medecin")) {
 			List<PatientDto> patients = patientService.getAllPatients(principal.getName());
 			
 			Type listType = new TypeToken<List<PatientResponse>>() {}.getType();
 			List<PatientResponse> patientResponse = new ModelMapper().map(patients, listType);
 			
 			return new ResponseEntity<List<PatientResponse>>(patientResponse, HttpStatus.OK);
-		}
+		//}
 		
-		return new ResponseEntity<List<PatientResponse>>(HttpStatus.UNAUTHORIZED);
+		//return new ResponseEntity<List<PatientResponse>>(HttpStatus.UNAUTHORIZED);
 		
 	}
 	
 	@PostMapping
 	public ResponseEntity<Object> createPatient(@RequestBody @Valid PatientRequest patientRequest, Principal principal) throws Exception {
 
-		UserDto currentUser = userService.getUserByUserId(principal.getName());
-		if(currentUser.getRole().getName().equals("gp") || currentUser.getRole().getName().equals("medecin") ) {
+		//UserDto currentUser = userService.getUserByUserId(principal.getName());
+		//if(currentUser.getRole().getName().equals("gp") || currentUser.getRole().getName().equals("medecin") ) {
 			if( patientRepository.findByCin(patientRequest.getCin()) != null ) throw new UserException(ErrorMessages.REQUIRED_ALREADY_EXISTS.getErrorMessage());
 			ModelMapper modelMapper = new ModelMapper();
 			PatientDto patientDto = modelMapper.map(patientRequest, PatientDto.class);
@@ -86,8 +86,8 @@ public class PatientController {
 			PatientResponse patientResponse = modelMapper.map(createPatient, PatientResponse.class);
 			
 			return new ResponseEntity<>(patientResponse,HttpStatus.CREATED);
-		}
-		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		//}
+		//return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 	}
 	
 	@PutMapping(path = "/{patientId}")
@@ -114,15 +114,12 @@ public class PatientController {
 	@DeleteMapping(path = "/{patientId}")
 	public ResponseEntity<Object> deletePatient(Principal principal , @PathVariable String patientId) {
 		
-		UserDto currentUser = userService.getUserByUserId(principal.getName());
-		if(currentUser.getRole().getName().equals("gp") || currentUser.getRole().getName().equals("medecin")) {
+		//UserDto currentUser = userService.getUserByUserId(principal.getName());
+		//if(currentUser.getRole().getName().equals("gp") || currentUser.getRole().getName().equals("medecin")) {
 			patientService.deletePatient(patientId);
 			
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); 
-		
-		
-		
+		//}
+		//return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); 
 	}
 }

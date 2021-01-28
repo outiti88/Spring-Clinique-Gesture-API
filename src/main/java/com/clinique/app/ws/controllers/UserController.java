@@ -51,11 +51,11 @@ public class UserController {
 	
 	@GetMapping(path = "/{id}")
 	public ResponseEntity<Object> getUser(Principal principal, @PathVariable String id) {
-		UserDto currentUser = userService.getUserByUserId(principal.getName());
+		//UserDto currentUser = userService.getUserByUserId(principal.getName());
 		
-		if(!currentUser.getRole().getName().equals("admin")) {
+		//if(!currentUser.getRole().getName().equals("admin")) {
 			id = principal.getName();
-		}
+		//}
 			
 		UserDto userDto = userService.getUserByUserId(id);
 		UserResponse userResponse = new UserResponse(); //Copier vers la reponse
@@ -167,9 +167,9 @@ public class UserController {
 	@PutMapping(path = "/{id}")
 	public ResponseEntity<Object> updateUser(Principal principal , @PathVariable String id, @RequestBody UserRequest userRequest) {
 		
-		UserDto currentUser = userService.getUserByUserId(principal.getName());
+		//UserDto currentUser = userService.getUserByUserId(principal.getName());
 		
-		if(currentUser.getRole().getName().equals("admin")) {
+		//if(currentUser.getRole().getName().equals("admin")) {
 			ModelMapper modelMapper = new ModelMapper();
 			UserDto userDto = modelMapper.map(userRequest, UserDto.class);
 			
@@ -178,23 +178,23 @@ public class UserController {
 			UserResponse userResponse = modelMapper.map(updateUser, UserResponse.class); //Copier vers la reponse
 			
 			return new ResponseEntity<>(userResponse,HttpStatus.ACCEPTED) ; 
-		}
-		List<UserResponse> userResponse = new ArrayList<>();
+		//}
+		//List<UserResponse> userResponse = new ArrayList<>();
 
-		return new ResponseEntity<>(userResponse,HttpStatus.UNAUTHORIZED) ; 
+		//return new ResponseEntity<>(userResponse,HttpStatus.UNAUTHORIZED) ; 
 		
 	}
 	
 	@DeleteMapping(path = "/{id}")
 	public ResponseEntity<Object> deleteUser(Principal principal , @PathVariable String id) {
 		
-		UserDto currentUser = userService.getUserByUserId(principal.getName());
-		if(currentUser.getRole().getName().equals("admin")) {
+		//UserDto currentUser = userService.getUserByUserId(principal.getName());
+		//if(currentUser.getRole().getName().equals("admin")) {
 			userService.deleteUser(id);
 			
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		//}
+		//return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		
 		
 		
