@@ -235,11 +235,9 @@ public class UserServiceImp implements UserService {
 	@Override
 	public List<UserDto> getUsersByRole(String roleId) {
 		RoleEntity roleEntity = roleRepository.findByRoleId(roleId);
-		List<UserEntity> users = userRepository.findByRole(roleEntity);
+		List<UserEntity> users = userRepository.findByRole(roleEntity.getId());
 		List<UserDto> userDtos = new ArrayList<>();
-		Iterator<UserEntity> iterator = users.iterator();
-		while (iterator.hasNext()) {
-			UserEntity userEntity = iterator.next();
+		users.stream().forEach(userEntity -> {
 			UserDto userDto = new UserDto();
 			userDto.setEmail(userEntity.getEmail());
 			userDto.setUserID(userEntity.getUserID());
@@ -250,7 +248,7 @@ public class UserServiceImp implements UserService {
 			roleDto.setRoleId(userEntity.getRole().getRoleId());
 			Iterator<PatientEntity> patientIterator = userEntity.getPatients().iterator();
 			List<PatientDto> patientDtos = new ArrayList<>();
-			while (iterator.hasNext()) {
+			while (patientIterator.hasNext()) {
 				PatientEntity patientEntity = patientIterator.next();
 				PatientDto patientDto = new PatientDto();
 				patientDto.setAdresse(patientEntity.getAdresse());
@@ -264,7 +262,8 @@ public class UserServiceImp implements UserService {
 			userDto.setRole(roleDto);
 			userDto.setPatientDto(patientDtos);
 			userDtos.add(userDto);
-		}
+		});
+
 		return userDtos;
 	}
 

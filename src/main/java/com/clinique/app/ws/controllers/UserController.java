@@ -94,7 +94,7 @@ public class UserController {
 			UserDto userDto = iterator.next();
 			UserResponse userResponse = new UserResponse();
 			userResponse.setEmail(userDto.getEmail());
-			userResponse.setFirstName(userDto.getEmail());
+			userResponse.setFirstName(userDto.getFirstName());
 			userResponse.setLastName(userDto.getLastName());
 			RoleResponse roleResponse = new RoleResponse();
 			roleResponse.setName(userDto.getRole().getName());
@@ -103,7 +103,7 @@ public class UserController {
 			userResponse.setUserID(userDto.getUserID());
 			List<PatientResponse> patientsResponses = new ArrayList<>();
 			Iterator<PatientDto> patientIterator = userDto.getPatientDto().iterator();
-			while (iterator.hasNext()) {
+			while (patientIterator.hasNext()) {
 				PatientDto patientDto = patientIterator.next();
 				PatientResponse patientResponse = new PatientResponse();
 				patientResponse.setAdresse(patientDto.getAdresse());

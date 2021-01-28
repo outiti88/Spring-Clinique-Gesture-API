@@ -36,6 +36,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter{
 		.permitAll()
 		.antMatchers(HttpMethod.POST,"/roles")
 		.permitAll()
+		.antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html**", "/webjars/**")
+		.permitAll()
 		.anyRequest().authenticated().and()
 		.addFilter(new AuthenticationFilter(authenticationManager()))
 		.addFilter(new AuthorizationFilter(authenticationManager()))
