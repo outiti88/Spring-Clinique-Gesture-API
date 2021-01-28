@@ -118,7 +118,7 @@ public class RdvController {
 		startTime = c + startTime + c;
 		endTime = c + endTime + c;
 		motif = c + motif + c;
-		state = c + motif + c;
+		state = c + state + c;
 		List<RdvDto> rdvsDtos = rdvService.filterRdv(date, startTime, endTime, motif, state);
 		List<RdvResponse> rdvsResponses = new ArrayList<RdvResponse>();
 		Iterator<RdvDto> iterator = rdvsDtos.iterator();
